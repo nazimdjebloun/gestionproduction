@@ -1,4 +1,5 @@
-import React from 'react'
+"use client";
+import React from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -20,12 +21,12 @@ import {
   Folder,
   FilePen,
 } from "lucide-react";
-
+import { usePathname } from "next/navigation";
 
 const items = [
   {
     title: "Dashboard ",
-    url: "#",
+    url: "/",
     icon: LayoutDashboard,
   },
   {
@@ -44,35 +45,34 @@ const items = [
     url: "#",
     icon: Settings,
   },
-  {
-    title: "test",
-    url: "#",
-    icon: Home,
-  },
-  {
-    title: "test2",
-    url: "#",
-    icon: Inbox,
-  },
 ];
- 
+
 export default function CustomSidebareMenu() {
+  const pathname = usePathname();
   return (
     <SidebarMenu>
       <SidebarGroup>
         <SidebarGroupLabel>Application</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
-            {items.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild tooltip={item.title}>
-                  <Link href={item.url}>
-                    <item.icon />
-                    <span>{item.title}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+            {items.map((item) => {
+              const isActive = pathname === item.url;
+
+              return (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={item.title}
+                    className={isActive ? "bg-neutral-700 " : ""}
+                  >
+                    <Link href={item.url} className={isActive ? "" : ""}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>

@@ -1,4 +1,5 @@
-import React from 'react'
+"use client";
+import React from "react";
 import { User, LogOut } from "lucide-react";
 import {
   Sidebar,
@@ -10,19 +11,28 @@ import {
   SidebarMenuItem,
   SidebarMenu,
 } from "@/components/ui/sidebar";
-import ThemeSwitch from '../theme/theme-swicth';
+import ThemeSwitch from "../theme/theme-swicth";
+import { usePathname } from "next/navigation";
+
 export default function CustomSidebareFooter() {
+  const pathname = usePathname();
+  const isActive = pathname === "/profile";
+
   return (
     <SidebarFooter className="border-t">
       <SidebarMenu>
         <SidebarMenuItem className="flex items-center justify-center">
-          <SidebarMenuButton asChild tooltip="theme" >
+          <SidebarMenuButton asChild tooltip="theme">
             <ThemeSwitch />
           </SidebarMenuButton>
         </SidebarMenuItem>
         <SidebarMenuItem>
-          <SidebarMenuButton asChild tooltip="Profile">
-            <a href="#profile" className="flex items-center">
+          <SidebarMenuButton
+            asChild
+            tooltip="/Profile"
+            className={isActive ? "bg-neutral-700 " : ""}
+          >
+            <a href="/profile" className="flex items-center">
               <User className="h-6 w-6"></User>
               <span className="ml-2">John Doe</span>
             </a>
