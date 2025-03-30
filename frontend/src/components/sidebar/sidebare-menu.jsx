@@ -44,6 +44,16 @@ const items = [
     url: "#",
     icon: Settings,
   },
+  {
+    title: "test",
+    url: "#",
+    icon: Home,
+  },
+  {
+    title: "test2",
+    url: "#",
+    icon: Inbox,
+  },
 ];
  
 export default function CustomSidebareMenu() {
