@@ -30,16 +30,15 @@ const items = [
     icon: LayoutDashboard,
   },
   {
-    title: "Dossier client",
-    url: "#",
+    title: "Client",
+    url: "/client",
     icon: Folder,
   },
   {
-    title: "Fiche production",
+    title: "Dossier client",
     url: "#",
     icon: FilePen,
   },
-
   {
     title: "Parametre",
     url: "#",
@@ -63,7 +62,9 @@ export default function CustomSidebareMenu() {
                   <SidebarMenuButton
                     asChild
                     tooltip={item.title}
-                    className={isActive ? "bg-neutral-700 " : ""}
+                    className={
+                      isActive ? "bg-primary text-primary-foreground " : ""
+                    }
                   >
                     <Link href={item.url} className={isActive ? "" : ""}>
                       <item.icon />
