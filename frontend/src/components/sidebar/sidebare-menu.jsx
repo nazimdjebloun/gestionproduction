@@ -36,7 +36,7 @@ const items = [
   },
   {
     title: "Dossier client",
-    url: "#",
+    url: "/dossierclient",
     icon: FilePen,
   },
   {

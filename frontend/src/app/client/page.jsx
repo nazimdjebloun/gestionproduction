@@ -16,27 +16,27 @@ import CreateClientAction from "@/actions/create-client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
-export default function Cleint() {
+export default function Client() {
   const [state, formAction, isPending] = useActionState(
     CreateClientAction,
     null
   );
-      useEffect(() => {
-        if (state?.success === true) {
-          toast.success(state?.message);
-          }
-        if (state?.success === false) {
-        toast.error(state?.message);
-                  }
-      }, [state]);
-    
+  useEffect(() => {
+    if (state?.success === true) {
+      toast.success(state?.message);
+    }
+    if (state?.success === false) {
+      toast.error(state?.message);
+    }
+  }, [state]);
+
   return (
     <div className=" w-full flex items-center justify-center  5 m-2 rounded-xl">
       <Card className="w-[450px] h-fit">
         <CardHeader>
-          <CardTitle>Contact Information</CardTitle>
+          <CardTitle>Ajouter un client</CardTitle>
           <CardDescription>
-            Please fill in your contact details below.
+            Veuillez remplir le formulaire ci-dessous
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -120,8 +120,11 @@ export default function Cleint() {
                 </p>
               )}
             </div>
-            <div className="space-y-2">
-              <Button type="submit" className="w-full" disabled={isPending}>
+            <div className=" flex justify-end w-full gap-2 ">
+              <Button variant="destructive" type="reset" className="">
+                réinitialiser
+              </Button>
+              <Button type="submit" className="" disabled={isPending}>
                 {isPending ? (
                   <>
                     <Loader2 size={16} className="animate-spin" />{" "}

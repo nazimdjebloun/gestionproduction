@@ -1,23 +1,21 @@
 "use server"
 import  {ClientformSchema} from "@/schemas/formSchema";
-import { z } from "zod";
+import {  z } from "zod";
 
 
-export default async function CreateClientAction(prevState, formData) {
-await new Promise((resolve) => setTimeout(resolve, 1000));    const data = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      phone: formData.get("phone"),
-      address: formData.get("address"),
-    };
+export default async function CreateClientFolderAction(prevState, formData) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const data = {
+  client: formData.get("client"),
+};
     
     try {
-        // console.log("Raw form data:", data);
-        const validatedData = ClientformSchema.parse(data);
+        console.log("Raw form data:", data);
+        // const validatedData = ClientformSchema.parse(data);
         // console.log("Validated data:", validatedData);
     return {
       success: true,
-      message: "Client ajouté avec succès",
+      message: "Dossier Client ajouté avec succès",
     };
         
     } catch (error) {
