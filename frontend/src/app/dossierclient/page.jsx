@@ -8,30 +8,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 
-import CreateClientAction from "@/actions/create-client";
 import { toast } from "sonner";
 import { Loader2, Check, ChevronsUpDown } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+
 import CreateClientFolderAction from "@/actions/create-clientFolder";
-import SelectProducts from "./_components/select-products";
+import SelectClient from "./_components/select-client";
+import ProductCard from "./_components/product-card";
+import SelectDepartment from "./_components/select-department";
 
 const clients = [
   {
@@ -55,17 +40,85 @@ const clients = [
     label: "client 15",
   },
 ];
- 
+
+const departments = [
+  {
+    id: "department001",
+    name: "department 1",
+  },
+  {
+    id: "department002",
+    name: "department 2",
+  },
+  {
+    id: "department003",
+    name: "department 3",
+  },
+  {
+    id: "department004",
+    name: "department 4",
+  },
+];
+
+const availableProducts = [
+  {
+    id: "1",
+    name: "Laptop",
+  },
+  {
+    id: "2",
+    name: "Smartphone",
+  },
+  {
+    id: "3",
+    name: "Headphones",
+  },
+  {
+    id: "4",
+    name: "Monitor",
+  },
+  {
+    id: "5",
+    name: "Keyboard",
+  },
+  {
+    id: "6",
+    name: "Mouse",
+  },
+  {
+    id: "7",
+    name: "Tablet",
+  },
+  {
+    id: "8",
+    name: "Webcam",
+  },
+];
 
 export default function DossierClient() {
-      const [open, setOpen] = useState(false);
-      const [value, setValue] = useState("");
   const [state, formAction, isPending] = useActionState(
     CreateClientFolderAction,
     null
   );
+  const [client, setClient] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [department, setDepartment] = useState("");
+
+  // useEffect(() => {
+  //   console.log(JSON.stringify(selectedProducts));
+  // }, [selectedProducts]);
+
+  useEffect(() => {
+    if (departments.length > 0 && !department) {
+      setDepartment(departments[0].id);
+    }
+  }, [departments]);
+
   useEffect(() => {
     if (state?.success === true) {
+      setSelectedProducts([]);
+      setClient("");
+      setDepartment("");
       toast.success(state?.message);
     }
     if (state?.success === false) {
@@ -76,16 +129,24 @@ export default function DossierClient() {
   return (
     <div className=" w-full flex items-center justify-center  5 m-2 rounded-xl">
       <Card className="w-[800px] h-fit">
-        <CardHeader>
-          <CardTitle>Cree un dossier client</CardTitle>
-          <CardDescription>
-            Veuillez remplir le formulaire ci-dessous
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form action={formAction} className="space-y-4">
-            <div className="space-y-2">
-              <Popover open={open} onOpenChange={setOpen} className="w-[100%]">
+        <form action={formAction} className="space-y-4">
+          <CardHeader className="flex justify-between">
+            <div>
+              <CardTitle>Cree un dossier client</CardTitle>
+              <CardDescription>
+                Veuillez remplir le formulaire ci-dessous
+              </CardDescription>
+            </div>
+            <SelectDepartment
+              state={state}
+              setDepartment={setDepartment}
+              department={department}
+              departmentValues={departments}
+            />
+          </CardHeader>
+          <CardContent>
+            <div className="">
+              {/* <Popover open={open} onOpenChange={setOpen} className="w-[100%]">
                 <Label htmlFor="client">Client</Label>
                 <Input
                   id="client"
@@ -117,7 +178,7 @@ export default function DossierClient() {
                       className="h-9"
                     />
                     <CommandList>
-                      <CommandEmpty>client introuvable</CommandEmpty>
+                      <CommandEmpty>Client introuvable</CommandEmpty>
                       <CommandGroup>
                         {clients.map((client) => (
                           <CommandItem
@@ -130,7 +191,7 @@ export default function DossierClient() {
                               setOpen(false);
                             }}
                           >
-                            {client.label} +
+                            {client.label}
                             <Check
                               className={cn(
                                 "ml-auto",
@@ -145,14 +206,27 @@ export default function DossierClient() {
                     </CommandList>
                   </Command>
                 </PopoverContent>
-              </Popover>
+              </Popover> */}
+              <SelectClient
+                clients={clients}
+                value={client}
+                setValue={setClient}
+              />
+              {state?.errors?.client && (
+                <p className="text-sm text-red-500 px-2">
+                  {state.errors.client[0]}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
-              <SelectProducts />
+              <ProductCard
+                state={state}
+                availableProducts={availableProducts}
+                selectedProducts={selectedProducts}
+                setSelectedProducts={setSelectedProducts}
+              />
             </div>
-
-
 
             <div className=" flex justify-end w-full gap-2 ">
               <Button variant="destructive" type="reset" className="">
@@ -172,9 +246,9 @@ export default function DossierClient() {
             {state?.errors?._form && (
               <p className="text-sm text-red-500">{state.errors._form}</p>
             )}
-          </form>
-        </CardContent>
-        <CardFooter></CardFooter>
+          </CardContent>
+          <CardFooter></CardFooter>
+        </form>
       </Card>
     </div>
   );
