@@ -21,6 +21,13 @@ CREATE TABLE IF NOT EXISTS public.client
     CONSTRAINT client_pkey PRIMARY KEY (id_client)
 );
 
+CREATE TABLE IF NOT EXISTS public.commande_fiche
+(
+    id_fiche_production uuid NOT NULL,
+    id_detail_commande uuid NOT NULL,
+    CONSTRAINT commande_fiche_pkey PRIMARY KEY (id_fiche_production, id_detail_commande)
+);
+
 CREATE TABLE IF NOT EXISTS public.departement
 (
     id_departement uuid NOT NULL DEFAULT uuid_generate_v4(),
@@ -28,11 +35,22 @@ CREATE TABLE IF NOT EXISTS public.departement
     CONSTRAINT departement_pkey PRIMARY KEY (id_departement)
 );
 
+CREATE TABLE IF NOT EXISTS public.detail_commande
+(
+    id_detail_commande uuid NOT NULL DEFAULT uuid_generate_v4(),
+    quantite character varying(50) COLLATE pg_catalog."default",
+    details character varying(50) COLLATE pg_catalog."default",
+    largeur character varying(50) COLLATE pg_catalog."default",
+    epaisseur character varying(50) COLLATE pg_catalog."default",
+    id_produit uuid NOT NULL,
+    id_dossier uuid NOT NULL,
+    CONSTRAINT detail_commande_pkey PRIMARY KEY (id_detail_commande)
+);
+
 CREATE TABLE IF NOT EXISTS public.dossier
 (
     id_dossier uuid NOT NULL DEFAULT uuid_generate_v4(),
     date_creation timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    id_departement uuid NOT NULL,
     id_client uuid NOT NULL,
     CONSTRAINT dossier_pkey PRIMARY KEY (id_dossier)
 );
@@ -48,12 +66,29 @@ CREATE TABLE IF NOT EXISTS public.employe
     CONSTRAINT employe_pkey PRIMARY KEY (id_employe)
 );
 
+CREATE TABLE IF NOT EXISTS public.fiche_production
+(
+    id_fiche_production uuid NOT NULL DEFAULT uuid_generate_v4(),
+    id_atelier uuid NOT NULL,
+    id_dossier uuid NOT NULL,
+    CONSTRAINT fiche_production_pkey PRIMARY KEY (id_fiche_production)
+);
+
 CREATE TABLE IF NOT EXISTS public.matiere_premiere
 (
     id_matiere uuid NOT NULL DEFAULT uuid_generate_v4(),
     designation_matiere text COLLATE pg_catalog."default" NOT NULL,
     description_matiere text COLLATE pg_catalog."default",
     CONSTRAINT matiere_premiere_pkey PRIMARY KEY (id_matiere)
+);
+
+CREATE TABLE IF NOT EXISTS public.matiere_utilise
+(
+    id_fiche_production uuid NOT NULL,
+    id_matiere uuid NOT NULL,
+    quantite text COLLATE pg_catalog."default",
+    prix_unite text COLLATE pg_catalog."default",
+    CONSTRAINT matiere_utilise_pkey PRIMARY KEY (id_fiche_production, id_matiere)
 );
 
 CREATE TABLE IF NOT EXISTS public.produit
@@ -65,12 +100,21 @@ CREATE TABLE IF NOT EXISTS public.produit
     CONSTRAINT produit_pkey PRIMARY KEY (id_produit)
 );
 
-CREATE TABLE IF NOT EXISTS public.produit_aproduire
+CREATE TABLE IF NOT EXISTS public.pv
 (
+    id_pv uuid NOT NULL DEFAULT uuid_generate_v4(),
+    motif text COLLATE pg_catalog."default" NOT NULL,
+    date_creation timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    reserve text COLLATE pg_catalog."default",
     id_dossier uuid NOT NULL,
-    id_produit uuid NOT NULL,
-    quantite integer NOT NULL,
-    CONSTRAINT produit_aproduire_pkey PRIMARY KEY (id_dossier, id_produit)
+    CONSTRAINT pv_pkey PRIMARY KEY (id_pv)
+);
+
+CREATE TABLE IF NOT EXISTS public.travaille
+(
+    id_fiche_production uuid NOT NULL,
+    id_employe uuid NOT NULL,
+    CONSTRAINT travaille_pkey PRIMARY KEY (id_fiche_production, id_employe)
 );
 
 CREATE TABLE IF NOT EXISTS public.type_produit
@@ -87,16 +131,37 @@ ALTER TABLE IF EXISTS public.atelier
     ON DELETE CASCADE;
 
 
+ALTER TABLE IF EXISTS public.commande_fiche
+    ADD CONSTRAINT commande_fiche_id_detail_commande_fkey FOREIGN KEY (id_detail_commande)
+    REFERENCES public.detail_commande (id_detail_commande) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.commande_fiche
+    ADD CONSTRAINT commande_fiche_id_fiche_production_fkey FOREIGN KEY (id_fiche_production)
+    REFERENCES public.fiche_production (id_fiche_production) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.detail_commande
+    ADD CONSTRAINT detail_commande_id_dossier_fkey FOREIGN KEY (id_dossier)
+    REFERENCES public.dossier (id_dossier) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.detail_commande
+    ADD CONSTRAINT detail_commande_id_produit_fkey FOREIGN KEY (id_produit)
+    REFERENCES public.produit (id_produit) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
 ALTER TABLE IF EXISTS public.dossier
     ADD CONSTRAINT dossier_id_client_fkey FOREIGN KEY (id_client)
     REFERENCES public.client (id_client) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE CASCADE;
-
-
-ALTER TABLE IF EXISTS public.dossier
-    ADD CONSTRAINT dossier_id_departement_fkey FOREIGN KEY (id_departement)
-    REFERENCES public.departement (id_departement) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE CASCADE;
 
@@ -108,6 +173,34 @@ ALTER TABLE IF EXISTS public.employe
     ON DELETE CASCADE;
 
 
+ALTER TABLE IF EXISTS public.fiche_production
+    ADD CONSTRAINT fiche_production_id_atelier_fkey FOREIGN KEY (id_atelier)
+    REFERENCES public.atelier (id_atelier) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE CASCADE;
+
+
+ALTER TABLE IF EXISTS public.fiche_production
+    ADD CONSTRAINT fiche_production_id_dossier_fkey FOREIGN KEY (id_dossier)
+    REFERENCES public.dossier (id_dossier) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE CASCADE;
+
+
+ALTER TABLE IF EXISTS public.matiere_utilise
+    ADD CONSTRAINT matiere_utilise_id_fiche_production_fkey FOREIGN KEY (id_fiche_production)
+    REFERENCES public.fiche_production (id_fiche_production) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE CASCADE;
+
+
+ALTER TABLE IF EXISTS public.matiere_utilise
+    ADD CONSTRAINT matiere_utilise_id_matiere_fkey FOREIGN KEY (id_matiere)
+    REFERENCES public.matiere_premiere (id_matiere) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE CASCADE;
+
+
 ALTER TABLE IF EXISTS public.produit
     ADD CONSTRAINT produit_id_type_produit_fkey FOREIGN KEY (id_type_produit)
     REFERENCES public.type_produit (id_type_produit) MATCH SIMPLE
@@ -115,17 +208,24 @@ ALTER TABLE IF EXISTS public.produit
     ON DELETE CASCADE;
 
 
-ALTER TABLE IF EXISTS public.produit_aproduire
-    ADD CONSTRAINT produit_aproduire_id_dossier_fkey FOREIGN KEY (id_dossier)
+ALTER TABLE IF EXISTS public.pv
+    ADD CONSTRAINT pv_id_dossier_fkey FOREIGN KEY (id_dossier)
     REFERENCES public.dossier (id_dossier) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE CASCADE;
 
 
-ALTER TABLE IF EXISTS public.produit_aproduire
-    ADD CONSTRAINT produit_aproduire_id_produit_fkey FOREIGN KEY (id_produit)
-    REFERENCES public.produit (id_produit) MATCH SIMPLE
+ALTER TABLE IF EXISTS public.travaille
+    ADD CONSTRAINT travaille_id_employe_fkey FOREIGN KEY (id_employe)
+    REFERENCES public.employe (id_employe) MATCH SIMPLE
     ON UPDATE NO ACTION
-    ON DELETE CASCADE;
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.travaille
+    ADD CONSTRAINT travaille_id_fiche_production_fkey FOREIGN KEY (id_fiche_production)
+    REFERENCES public.fiche_production (id_fiche_production) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
 
 END;
