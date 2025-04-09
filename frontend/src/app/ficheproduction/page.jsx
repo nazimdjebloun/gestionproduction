@@ -16,54 +16,19 @@ import { Button } from "@/components/ui/button";
 import { Loader2, PlusCircle } from "lucide-react";
 import SelectProducts from "../dossierclient/_components/select-products";
 import { useFolderProducts, useProducts } from "@/hooks/fetsh-data";
-import SelectedProductsCard from "../dossierclient/_components/selected-products-card";
 import SelectShop from "./_components/select-shop";
 import { toast } from "sonner";
+import SelectFolder from "./_components/select-fodler";
+import SelectFolderProducts from "./_components/select-folder-products";
 export default function FicheProduction() {
   const [state, formAction, isPending] = useActionState(
     CreateProductionFileAction,
     null
   );
-    // const { data: FolderProducts, isLoading, refresh } = useFolderProducts();
-    const { data: availableProducts, isLoading, refresh } = useProducts();
-  
+
   const [department, setDepartment] = useState("");
   const [shop, setShop] = useState("");
-
-    const [selectedProducts, setSelectedProducts] = useState([]);
-    const [selectedProductId, setSelectedProductId] = useState("");
-
-    const handleRemoveProduct = (id_produit) => {
-      setSelectedProducts(
-        selectedProducts.filter((p) => p.id_produit !== id_produit)
-      );
-      toast("Product removed");
-  };
-  
-    const handleAddProduct = () => {
-      if (!selectedProductId) {
-        toast.error("No product selected");
-        return;
-      }
-
-      const productToAdd = availableProducts.find(
-        (p) => p.id_produit === selectedProductId
-      );
-
-      if (!productToAdd) return;
-
-      // const uniqueId = `${selectedProductId}-${Date.now()}`;
-      const newProduct = {
-        ...productToAdd,
-        id_produit: productToAdd.id_produit,
-
-      };
-
-      setSelectedProducts([...selectedProducts, newProduct]);
-      setSelectedProductId("");
- 
-      toast.success(`${productToAdd.designation_produit} ajouter `);
-    };
+  const [folder, setFolder] = useState("");
 
   return (
     <div className=" w-full flex items-center justify-center  5 m-2 rounded-xl">
@@ -76,35 +41,25 @@ export default function FicheProduction() {
                 Veuillez remplir le formulaire ci-dessous
               </CardDescription>
             </div>
-            <SelectDepartment
-              state={state}
-              setDepartment={setDepartment}
-              department={department}
-            />
-            <SelectShop state={state} setShop={setShop} shop={shop} />
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
-              <SelectProducts
-                availableProducts={availableProducts}
-                selectedProductId={selectedProductId}
-                setSelectedProductId={setSelectedProductId}
-              />
-              <Button
-                type="button"
-                onClick={handleAddProduct}
-                className="sm:w-1/4 flex flex-row justify-center items-center gap-1"
-              >
-                <PlusCircle className=" h-4 w-4" />
-                <span className=" font-bold">Ajouter</span>
-              </Button>
-              <SelectedProductsCard
+            <div className="flex justify-between">
+              <SelectDepartment
                 state={state}
-                selectedProducts={selectedProducts}
-                handleRemoveProduct={handleRemoveProduct}
+                setDepartment={setDepartment}
+                department={department}
+              />
+              <SelectShop state={state} setShop={setShop} shop={shop} />
+              <SelectFolder
+                state={state}
+                setFolder={setFolder}
+                folder={folder}
               />
             </div>
 
+            <div>
+              <SelectFolderProducts state={state} />
+            </div>
             <div className=" flex justify-end w-full gap-2 ">
               <Button variant="destructive" type="reset" className="">
                 réinitialiser

@@ -157,7 +157,7 @@ export function useProductById(productId) {
 }
 
 export function useFolders() {
-  return useFetchData("/api/clientfolder", "clientfolders", (clientfolders) =>
+  return useFetchData("/api/clientfolders", "clientfolders", (clientfolders) =>
     clientfolders.map((clientfolder) => ({
       id_dossier: clientfolder.id_dossier,
       id_client: clientfolder.id_client,
@@ -166,7 +166,7 @@ export function useFolders() {
 }
 export function useFolderById(folderId) {
   return useFetchDataById(
-    "/api/clientfolder",
+    "/api/clientfolders",
     folderId,
     ["folder", folderId],
     (folder) => ({
