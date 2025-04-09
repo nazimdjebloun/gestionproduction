@@ -15,8 +15,14 @@ import { Button } from "@/components/ui/button";
 import CreateClientAction from "@/actions/create-client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+// import ClientTable from "./client-table";
+import { useQueryClient } from "@tanstack/react-query";
+import dynamic from "next/dynamic";
 
+const ClientTable = dynamic(() => import("./client-table"), { ssr: false });
 export default function Client() {
+  const queryClient = useQueryClient();
+
   const [state, formAction, isPending] = useActionState(
     CreateClientAction,
     null
@@ -24,6 +30,7 @@ export default function Client() {
   useEffect(() => {
     if (state?.success === true) {
       toast.success(state?.message);
+      queryClient.refetchQueries({ queryKey: ["clients"], type: "active" });
     }
     if (state?.success === false) {
       toast.error(state?.message);
@@ -31,7 +38,7 @@ export default function Client() {
   }, [state]);
 
   return (
-    <div className=" w-full flex items-center justify-center  5 m-2 rounded-xl">
+    <div className=" w-full flex flex-col gap-5 items-center justify-center  5 m-2 rounded-xl">
       <Card className="w-[450px] h-fit">
         <CardHeader>
           <CardTitle>Ajouter un client</CardTitle>
@@ -142,6 +149,7 @@ export default function Client() {
         </CardContent>
         <CardFooter></CardFooter>
       </Card>
+      <ClientTable />
     </div>
   );
 }

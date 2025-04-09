@@ -35,6 +35,7 @@ const clientService = {
       [name, email, phone, address]
     );
     return result.rows[0];
+
   },
 
   // Update client

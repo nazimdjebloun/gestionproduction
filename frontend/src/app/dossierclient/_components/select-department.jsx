@@ -8,21 +8,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useDepartments } from "@/hooks/fetsh-data";
 export default function SelectDepartment({
   setDepartment,
   state,
   department,
-  departmentValues,
+  // departmentValues,
 }) {
+  const { data: departments, isLoading, refresh } = useDepartments();
   return (
     <div>
       <p className="p-1">Departement</p>
       <Select
-        defaultValue={departmentValues.length > 0 ? departmentValues[0].id : ""}
+        defaultValue={departments.length > 0 ? departments[0].id : ""}
         id="department"
         name="department"
-        // value={department}
-        // onValueChange={setDepartment}
+        value={department}
+        onValueChange={setDepartment}
       >
         {/* <Input id="department" name="department" /> */}
         <SelectTrigger className="w-fit">
@@ -31,13 +33,16 @@ export default function SelectDepartment({
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Departement</SelectLabel>
-            {departmentValues.map((department) => (
-              <SelectItem key={department.id} value={department.id}>
-                {department.name}
+            {departments.map((department) => (
+              <SelectItem
+                key={department.id_departement}
+                value={department.id_departement}
+              >
+                {department.nom_departement}
               </SelectItem>
             ))}
-            <SelectItem value="production">Production</SelectItem>
-            <SelectItem value="affichage">Affichage</SelectItem>
+            {/* <SelectItem value="production">Production</SelectItem>
+            <SelectItem value="affichage">Affichage</SelectItem> */}
           </SelectGroup>
         </SelectContent>
       </Select>

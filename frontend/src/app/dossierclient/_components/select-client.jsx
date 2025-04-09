@@ -39,10 +39,13 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import CreateClientFolderAction from "@/actions/create-clientFolder";
+import { useClients } from "@/hooks/fetsh-data";
 
-
-export default function SelectClient({ clients, value, setValue }) {
+// export default function SelectClient({ value, setValue }) {
+export default function SelectClient({ value, setValue }) {
   const [open, setOpen] = useState(false);
+  const { data: clients, isLoading, refresh } = useClients();
+  const selectedClient = clients.find((client) => client.id_client === value);
   return (
     <div>
       <Popover open={open} onOpenChange={setOpen} className="w-[100%]">
@@ -55,7 +58,7 @@ export default function SelectClient({ clients, value, setValue }) {
           //   defaultValue={state?.inputs?.name}
           type="text"
           hidden
-              />
+        />
         <p className="p-1">Clients</p>
         <PopoverTrigger asChild className="w-[100%]">
           <Button
@@ -64,40 +67,109 @@ export default function SelectClient({ clients, value, setValue }) {
             aria-expanded={open}
             className="w-[100%] justify-between"
           >
-            {value
-              ? clients.find((client) => client.value === value)?.label
-              : "Selectionnez un client..."}
+            {selectedClient
+              ? selectedClient.nom_client
+              : isLoading
+              ? "Chargement..."
+              : "Sélectionnez un client..."}
             <ChevronsUpDown className="opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[100%] p-1">
+          {/* <Command className="w-full">
+            {isLoading ? (
+              <CommandGroup>
+                <CommandItem>
+                  Chargement des clients <Loader2 className="animate-spin" />
+                </CommandItem>
+              </CommandGroup>
+            ) : clients.length > 0 ? (
+              <>
+                <CommandInput
+                  placeholder="Recherche un client..."
+                  className="h-9"
+                />
+                <CommandList>
+                  <CommandEmpty>Client introuvable</CommandEmpty>
+                  <CommandGroup>
+                    {clients.map((client) => (
+                      <CommandItem
+                        key={client.id_client}
+                        value={client.nom_client}
+                        // onSelect={(currentValue) => {
+                        //   setValue(currentValue === value ? "" : currentValue);
+                        //   setOpen(false);
+                        // }}
+                        onSelect={() => {
+                          setValue(client.id_client); // update by ID
+                          setOpen(false);
+                        }}
+                      >
+                        {client.nom_client}
+                        <Check
+                          className={cn(
+                            "ml-auto",
+                            value === client.id_client
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </>
+            ) : (
+              <CommandGroup>
+                <CommandItem>Pas de clients</CommandItem>
+              </CommandGroup>
+            )}
+          </Command> */}
           <Command>
             <CommandInput
-              placeholder="Recherche un client..."
+              placeholder="Rechercher un client..."
               className="h-9"
+              disabled={isLoading}
             />
             <CommandList>
-              <CommandEmpty>Client introuvable</CommandEmpty>
-              <CommandGroup>
-                {clients.map((client) => (
-                  <CommandItem
-                    key={client.value}
-                    value={client.value}
-                    onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue);
-                      setOpen(false);
-                    }}
-                  >
-                    {client.label}
-                    <Check
-                      className={cn(
-                        "ml-auto",
-                        value === client.value ? "opacity-100" : "opacity-0"
-                      )}
-                    />
+              {isLoading ? (
+                <CommandGroup>
+                  <CommandItem disabled>
+                    Chargement des clients...
+                    <Loader2 className="animate-spin ml-2 h-4 w-4" />
                   </CommandItem>
-                ))}
-              </CommandGroup>
+                </CommandGroup>
+              ) : clients.length > 0 ? (
+                <>
+                  <CommandEmpty>Client introuvable.</CommandEmpty>
+                  <CommandGroup>
+                    {clients.map((client) => (
+                      <CommandItem
+                        key={client.id_client}
+                        value={client.nom_client}
+                        onSelect={() => {
+                          setValue(client.id_client);
+                          setOpen(false);
+                        }}
+                      >
+                        {client.nom_client}
+                        <Check
+                          className={cn(
+                            "ml-auto h-4 w-4",
+                            value === client.id_client
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </>
+              ) : (
+                <CommandGroup>
+                  <CommandItem disabled>Aucun client trouvé</CommandItem>
+                </CommandGroup>
+              )}
             </CommandList>
           </Command>
         </PopoverContent>

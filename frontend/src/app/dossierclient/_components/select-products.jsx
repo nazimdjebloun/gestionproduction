@@ -22,8 +22,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-
-
 export default function SelectProducts({
   selectedProductId,
   availableProducts,
@@ -43,8 +41,8 @@ export default function SelectProducts({
         >
           {selectedProductId
             ? availableProducts.find(
-                (product) => product.id === selectedProductId
-              )?.name
+                (product) => product.id_produit === selectedProductId
+              )?.designation_produit
             : "Rechrcher un produit..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -58,11 +56,13 @@ export default function SelectProducts({
               {availableProducts.map((product) => (
                 <CommandItem
                   // key=`${product.id}-${index}`
-                  key={product.id}
-                  value={product.name}
+                  key={product.id_produit}
+                  value={product.designation_produit}
                   onSelect={() => {
                     setSelectedProductId(
-                      product.id === selectedProductId ? "" : product.id
+                      product.id_produit === selectedProductId
+                        ? ""
+                        : product.id_produit
                     );
                     setOpen(false);
                   }}
@@ -70,12 +70,12 @@ export default function SelectProducts({
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      selectedProductId === product.id
+                      selectedProductId === product.id_produit
                         ? "opacity-100"
                         : "opacity-0"
                     )}
                   />
-                  <span>{product.name}</span>
+                  <span>{product.designation_produit}</span>
                 </CommandItem>
               ))}
             </CommandGroup>

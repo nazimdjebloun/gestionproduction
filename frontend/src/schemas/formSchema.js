@@ -14,7 +14,7 @@ export const ClientFolderformSchema = z.object({
   // department: z.enum(["production", "affichage"], {
   //   errorMap: () => ({ message: "veuillez choisir un departement" }),
   // }),
-  department: z.string().min(1, { message: "veuillez choisir un departement" }),
+  // department: z.string().min(1, { message: "veuillez choisir un departement" }),
 });
 
 // export const ClientFolderProductformSchema = z.object({

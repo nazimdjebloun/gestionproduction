@@ -22,7 +22,7 @@ export default function SelectedProductsCard({
           <div className="divide-y-1">
             {selectedProducts.map((product, index) => (
               <div
-                key={product.uniqueId}
+                key={index}
                 className="p-4 flex justify-between items-center"
               >
                 <Input
@@ -35,7 +35,7 @@ export default function SelectedProductsCard({
                   <div className="">
                     <div className="font-medium gap-3 flex">
                       <span className="font-bold">{product.quantity}</span>
-                      <p>{product.name}</p>
+                      <p>{product.designation_produit}</p>
                     </div>
                     <div className="">
                       {product.productDetails && (
@@ -61,11 +61,13 @@ export default function SelectedProductsCard({
                   type="button"
                   variant="ghost"
                   size="icon"
-                  onClick={() => handleRemoveProduct(product.uniqueId)}
+                  onClick={() => handleRemoveProduct(product.id_produit)}
                   className="text-destructive hover:text-destructive/90 hover:bg-destructive/10"
                 >
                   <Trash2 className="h-4 w-4" />
-                  <span className="sr-only">Remove {product.name}</span>
+                  <span className="sr-only">
+                    Remove {product.designation_produit}
+                  </span>
                 </Button>
               </div>
             ))}

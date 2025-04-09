@@ -40,6 +40,11 @@ const items = [
     icon: FilePen,
   },
   {
+    title: "Fiche production",
+    url: "/ficheproduction",
+    icon: FilePen,
+  },
+  {
     title: "Parametre",
     url: "#",
     icon: Settings,

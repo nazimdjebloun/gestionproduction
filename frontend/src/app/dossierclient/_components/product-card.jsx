@@ -23,19 +23,22 @@ import SelectedProductsCard from "./selected-products-card";
 import ProductQuantity from "./product-quantity";
 import ProductSurface from "./product-surface";
 import CreateClientFolderAction from "@/actions/create-clientFolder";
+import { useProducts } from "@/hooks/fetsh-data";
 
 export default function ProductCard({
-  availableProducts,
+  // availableProducts,
   selectedProducts,
   setSelectedProducts,
   state,
 }) {
+  const { data: availableProducts, isLoading, refresh } = useProducts();
   const [quantity, setQuantity] = useState(1);
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
   const [hasSurface, setHasSurface] = useState(false);
   const [productDetails, setProductDetails] = useState("");
   const [selectedProductId, setSelectedProductId] = useState("");
+
   //   const [selectedProducts, setSelectedProducts] = useState([]);
   // useEffect(() => {
   //   console.log("selectedProducts:", selectedProducts);
@@ -57,19 +60,18 @@ export default function ProductCard({
     }
 
     const productToAdd = availableProducts.find(
-      (p) => p.id === selectedProductId
+      (p) => p.id_produit === selectedProductId
     );
 
     if (!productToAdd) return;
 
-    const uniqueId = `${selectedProductId}-${Date.now()}`;
+    // const uniqueId = `${selectedProductId}-${Date.now()}`;
     const newProduct = {
       ...productToAdd,
-      uniqueId,
+      id_produit: productToAdd.id_produit,
       quantity,
-      productDetails,
-      // surface: { width, height },
-      ...(hasSurface ? { surface: { width, height } } : {}),
+      ...(productDetails ? { productDetails } : { productDetails: null }),
+      ...(hasSurface ? { width, height } : { width: null, height: null }),
     };
 
     setSelectedProducts([...selectedProducts, newProduct]);
@@ -82,12 +84,12 @@ export default function ProductCard({
       setHasSurface(false);
     }
 
-    toast.success(`${productToAdd.name} added`);
+    toast.success(`${productToAdd.designation_produit} ajouter `);
   };
 
-  const handleRemoveProduct = (uniqueId) => {
+  const handleRemoveProduct = (id_produit) => {
     setSelectedProducts(
-      selectedProducts.filter((p) => p.uniqueId !== uniqueId)
+      selectedProducts.filter((p) => p.id_produit !== id_produit)
     );
     toast("Product removed");
   };

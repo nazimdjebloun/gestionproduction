@@ -1,5 +1,5 @@
 // controllers/client.controller.js
-import clientService from "../services/client.service.js";
+import clientService from "../services/clients.service.js";
 import express from "express";
 
 
@@ -42,7 +42,6 @@ const clientController = {
     createClient : async (req, res, next) => {
         try {
             const client = await clientService.createClient(req.body);
-            console.log(req.body);
             res.status(201).json({
                 success: true,
                 data: client,
