@@ -43,7 +43,7 @@ export default async function CreateClientFolderAction(prevState, formData) {
       selectedProducts,
     });
     console.log("Validated data:", validatedProducts.selectedProducts);
-    const response = await axiosInstance.post("/api/clientfolder", {
+    const response = await axiosInstance.post("/api/clientfolders", {
       client: validatedData.client,
       selectedProducts: validatedProducts.selectedProducts,
     });
@@ -53,7 +53,7 @@ export default async function CreateClientFolderAction(prevState, formData) {
       message: "Dossier Client ajouté avec succès",
     };
   } catch (error) {
-    // console.error("Error :", error);
+    console.error("Error :", error);
     if (error instanceof z.ZodError) {
       console.error("Error ZodError:", error);
       return {
