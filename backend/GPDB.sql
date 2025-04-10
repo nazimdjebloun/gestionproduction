@@ -148,8 +148,8 @@ ALTER TABLE IF EXISTS public.commande_fiche
 ALTER TABLE IF EXISTS public.detail_commande
     ADD CONSTRAINT detail_commande_id_dossier_fkey FOREIGN KEY (id_dossier)
     REFERENCES public.dossier (id_dossier) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION;
+    ON UPDATE CASCADE
+    ON DELETE CASCADE;
 
 
 ALTER TABLE IF EXISTS public.detail_commande
