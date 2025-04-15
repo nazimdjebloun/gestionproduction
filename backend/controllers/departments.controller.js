@@ -36,6 +36,25 @@ const departmentController = {
       next(error);
     }
   },
+  getDepartmentByFodlerId: async (req, res, next) => {
+    try {
+      const department = await departmentService.getDepartmentByFodlerId(
+        req.params.id
+      );
+      if (!department) {
+        return res.status(404).json({
+          success: false,
+          message: "Department not found",
+        });
+      }
+      res.status(200).json({
+        success: true,
+        data: department,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 
   // Create new client
   createDepartment: async (req, res, next) => {

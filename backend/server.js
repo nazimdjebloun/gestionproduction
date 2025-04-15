@@ -5,6 +5,7 @@ import clientfolderRoutes from "./routes/clientfolders.routes.js";
 import productionFileRoutes from "./routes/productionfiles.routes.js";
 import departmentsRoutes from "./routes/departments.routes.js";
 import shopsRoutes from "./routes/shops.routes.js";
+import ordersRoutes from "./routes/orders.routes.js";
 
 import cors from "cors";
 
@@ -22,6 +23,8 @@ app.use("/api/clientfolders", clientfolderRoutes);
 app.use("/api/productionfiles", productionFileRoutes);
 app.use("/api/departments", departmentsRoutes);
 app.use("/api/shops", shopsRoutes);
+app.use("/api/orders", ordersRoutes);
+
 app.listen(PORT, () => {
   console.log(` app running on port ${PORT}`);
 });

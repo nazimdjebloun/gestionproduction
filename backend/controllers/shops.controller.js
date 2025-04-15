@@ -36,6 +36,25 @@ const shopController = {
     }
   },
 
+  getShopByDepartmentId: async (req, res, next) => {
+    try {
+      const shops = await shopService.getShopByDepartmentId(req.params.id);
+      if (!shops) {
+        return res.status(404).json({
+          success: false,
+          message: "Shop not found",
+        });
+      }
+      res.status(200).json({
+        success: true,
+        count: shops.length,
+        data: shops,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   // Create new shop
   createShop: async (req, res, next) => {
     try {

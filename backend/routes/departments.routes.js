@@ -8,6 +8,10 @@ router.get("/", departmentController.getAllDepartments);
 // GET single client
 router.get("/:id", departmentController.getDepartmentById);
 
+
+// GET single client
+router.get("folder/:id", departmentController.getDepartmentByFodlerId);
+
 // POST new client
 router.post("/", departmentController.createDepartment);
 

@@ -8,40 +8,52 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useShops } from "@/hooks/fetsh-data";
-export default function SelectShop({ setShop, state, shop }) {
-    const { data: shops, isLoading, refresh } = useShops();
-  
+import { useShopByDepartmentId, useShops } from "@/hooks/fetsh-data";
+export default function SelectShop({ department, shop, setShop, state }) {
+  const { data: shops, isLoading, refresh } = useShopByDepartmentId(department);
+
   return (
     <div>
       <p className="p-1">Ateliers</p>
       <Select
-        defaultValue={shops.length > 0 ? shops[0].id : ""}
+        // defaultValue={shops.length > 0 ? shops[0].id : ""}
         id="shop"
         name="shop"
         value={shop}
         onValueChange={setShop}
+        className="w-[50%]"
       >
-        {/* <Input id="department" name="department" /> */}
-        <SelectTrigger className="w-fit">
-          <SelectValue placeholder="Selectionnez un Departement" />
+        <SelectTrigger className="w-[50%]">
+          <SelectValue placeholder="Selectionnez un atelier" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Atelier</SelectLabel>
-            {shops.map((shop) => (
-              <SelectItem key={shop.id_atelier} value={shop.id_atelier}>
-                {shop.nom_atelier}
-              </SelectItem>
-            ))}
+            {shops && shops.length > 0 ? (
+              shops.map((shop) => (
+                <SelectItem key={shop.id_atelier} value={shop.id_atelier}>
+                  {shop.nom_atelier}
+                </SelectItem>
+              ))
+            ) : (
+              <SelectLabel>
+                {isLoading ? "Chargement..." : "Aucun atelier disponible"}
+              </SelectLabel>
+            )}
           </SelectGroup>
         </SelectContent>
       </Select>
-      {/* {state?.errors?.department && (
-        <p className="text-sm text-red-500 px-2">
-          {state.errors.department[0]}
-        </p>
-      )} */}
+      {state?.errors?.shop && (
+        <p className="text-sm text-red-500 px-2">{state.errors.shop[0]}</p>
+      )}
     </div>
   );
+}
+
+{
+  /* {shops.map((shop) => (
+              <SelectItem key={shop.id_atelier} value={shop.id_atelier}>
+                {shop.nom_atelier}
+              </SelectItem>
+            ))} */
 }

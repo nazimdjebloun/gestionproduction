@@ -1,9 +1,7 @@
 "use server"
 import axiosInstance from "@/lib/axios";
-import { ClientformSchema } from "@/schemas/formSchema";
 import { ClientFolderformSchema } from "@/schemas/formSchema";
 import { ClientFolderProductformSchema } from "@/schemas/formSchema";
-
 import { z } from "zod";
 
 export default async function CreateClientFolderAction(prevState, formData) {
@@ -11,8 +9,9 @@ export default async function CreateClientFolderAction(prevState, formData) {
 
   const data = {
     client: formData.get("client"),
-    // department: formData.get("department"),
+    department: formData.get("department"),
   };
+  console.log(data);
 
   //geting the selected products and passign them as an array of objects
   const productsStrings = formData.getAll("products[]");
@@ -31,20 +30,16 @@ export default async function CreateClientFolderAction(prevState, formData) {
   }
 
   try {
-    // console.log("Raw form data:", data);
-    // console.log("products:", products);
-
     //validation of clientr folder data
     const validatedData = ClientFolderformSchema.parse(data);
-    console.log("Validated data:", validatedData.client);
 
     //validation of clientr folder selected products
     const validatedProducts = ClientFolderProductformSchema.parse({
       selectedProducts,
     });
-    console.log("Validated data:", validatedProducts.selectedProducts);
+
     const response = await axiosInstance.post("/api/clientfolders", {
-      client: validatedData.client,
+      data: validatedData,
       selectedProducts: validatedProducts.selectedProducts,
     });
 

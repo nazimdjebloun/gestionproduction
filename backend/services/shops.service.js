@@ -17,6 +17,14 @@ const shopService = {
     return result.rows[0];
   },
 
+  getShopByDepartmentId: async (id_departement) => {
+    const result = await pool.query(
+      "SELECT * FROM atelier WHERE id_departement = $1",
+      [id_departement]
+    );
+    return result.rows[0];
+  },
+
   // Create new shop
   createShop: async (shopData) => {
     const { nom_atelier, id_departement } = shopData;

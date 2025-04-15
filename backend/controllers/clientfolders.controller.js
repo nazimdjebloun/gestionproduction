@@ -34,21 +34,19 @@ const clientFolderController = {
     }
   },
   createClientFolder: async (req, res, next) => {
-      try {
-        const { client, selectedProducts } = req.body;
+    try {
+      const { data, selectedProducts } = req.body;
       const clientFolder = await clientFolderService.createClientFolder(
-        client,
+        data,
         selectedProducts
       );
-        console.log("Received request body:", req.body);
       res.status(201).json({
         success: true,
         data: clientFolder,
       });
     } catch (error) {
-        console.log(error);
-        next(error);
-        
+      console.log(error);
+      next(error);
     }
   },
   updateClientFolder: async (req, res, next) => {

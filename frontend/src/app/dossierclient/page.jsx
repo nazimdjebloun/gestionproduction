@@ -24,12 +24,11 @@ export default function DossierClient() {
     CreateClientFolderAction,
     null
   );
+  const [department, setDepartment] = useState("");
   const [client, setClient] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
 
-  // useEffect(() => {
-  //   console.log(JSON.stringify(selectedProducts));
-  // }, [selectedProducts]);
+  useEffect(() => {}, []);
 
   // useEffect(() => {
   //   if (departments.length > 0 && !department) {
@@ -41,7 +40,7 @@ export default function DossierClient() {
     if (state?.success === true) {
       setSelectedProducts([]);
       setClient("");
-      // setDepartment("");
+      setDepartment("");
       toast.success(state?.message);
     }
     if (state?.success === false) {
@@ -60,12 +59,11 @@ export default function DossierClient() {
                 Veuillez remplir le formulaire ci-dessous
               </CardDescription>
             </div>
-            {/* <SelectDepartment
+            <SelectDepartment
               state={state}
               setDepartment={setDepartment}
               department={department}
-              departmentValues={departments}
-            /> */}
+            />
           </CardHeader>
           <CardContent>
             <div className="">

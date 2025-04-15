@@ -6,8 +6,8 @@ import { toast } from "sonner";
 // Base fetcher function that handles API calls
 const fetchData = async (endpoint) => {
   try {
-      const response = await axiosInstance.get(endpoint);
-      console.log(response.data.data)
+    const response = await axiosInstance.get(endpoint);
+    // console.log(response.data.data)
     return response.data.data;
   } catch (error) {
     console.error(`Error fetching data from ${endpoint}:`, error);
@@ -36,8 +36,6 @@ export function useFetchData(endpoint, queryKey, formatFn = (data) => data) {
   };
 }
 
-
-
 const fetchDataById = async (endpoint, id) => {
   try {
     const response = await axiosInstance.get(`${endpoint}/${id}`);
@@ -58,7 +56,7 @@ export function useFetchDataById(
   const query = useQuery({
     queryKey: Array.isArray(queryKey) ? queryKey : [queryKey, id],
     queryFn: () => fetchDataById(endpoint, id).then(formatFn),
-    enabled: !!id, 
+    enabled: !!id,
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: true,
     retry: 2,
@@ -74,17 +72,14 @@ export function useFetchDataById(
   };
 }
 
-
-
-
 // Specific hooks for each data type
 export function useClients() {
-    return useFetchData("/api/clients", "clients", (clients) =>
-      clients.map((client) => ({
-        id_client: client.id_client,
-        nom_client: client.nom_client,
-      }))
-    );
+  return useFetchData("/api/clients", "clients", (clients) =>
+    clients.map((client) => ({
+      id_client: client.id_client,
+      nom_client: client.nom_client,
+    }))
+  );
 }
 export function useClientById(clientId) {
   return useFetchDataById(
@@ -98,7 +93,6 @@ export function useClientById(clientId) {
   );
 }
 
-
 export function useDepartments() {
   return useFetchData("/api/departments", "departments", (departments) =>
     departments.map((dept) => ({
@@ -107,11 +101,24 @@ export function useDepartments() {
     }))
   );
 }
+
 export function useDepartmentById(departmentId) {
   return useFetchDataById(
     "/api/departments",
     departmentId,
     ["department", departmentId],
+    (department) => ({
+      id_departement: department.id_departement,
+      nom_departement: department.nom_departement,
+    })
+  );
+}
+
+export function useDepartmentByFolderId(folderId) {
+  return useFetchDataById(
+    "/api/departments/folder",
+    folderId,
+    ["department", folderId],
     (department) => ({
       id_departement: department.id_departement,
       nom_departement: department.nom_departement,
@@ -128,6 +135,32 @@ export function useShops() {
     }))
   );
 }
+// export function useShopByDepartmentId(depId) {
+//   return useFetchDataById("/api/shops/dep", depId, ["shop", depId], (shops) =>
+//     shops.map((shop) => ({
+//       id_atelier: shop.id_atelier,
+//       nom_atelier: shop.nom_atelier,
+//       id_departement: shop.id_departement,
+//     }))
+//   );
+// }
+
+export function useShopByDepartmentId(departmentId) {
+  return useFetchDataById(
+    `/api/shops/dep`,
+    departmentId,
+    ["shops", departmentId],
+    (shops) => {
+      const shopArray = Array.isArray(shops) ? shops : [shops];
+      return shopArray.map((shop) => ({
+        id_atelier: shop.id_atelier,
+        nom_atelier: shop.nom_atelier,
+        id_departement: shop.id_departement,
+      }));
+    }
+  );
+}
+
 export function useShopById(shopId) {
   return useFetchDataById("/api/shops", shopId, ["shop", shopId], (shop) => ({
     id_atelier: shop.id_atelier,
@@ -161,9 +194,11 @@ export function useFolders() {
     clientfolders.map((clientfolder) => ({
       id_dossier: clientfolder.id_dossier,
       id_client: clientfolder.id_client,
+      id_departement: clientfolder.id_departement,
     }))
   );
 }
+
 export function useFolderById(folderId) {
   return useFetchDataById(
     "/api/clientfolders",
@@ -172,14 +207,16 @@ export function useFolderById(folderId) {
     (folder) => ({
       id_dossier: folder.id_dossier,
       id_client: folder.id_client,
+      id_departement: folder.id_departement,
     })
   );
 }
+
 export function useFolderProducts(folderId) {
   return useFetchDataById(
-    "/api/clientfolder",
+    "/api/orders/clientfodler",
     folderId,
-    ["clientFolderProducts",folderId],
+    ["clientFolderProducts", folderId],
     (clientFolderProducts) =>
       clientFolderProducts.map((clientFolderProduct) => ({
         id_detail_commande: clientFolderProduct.id_detail_commande,

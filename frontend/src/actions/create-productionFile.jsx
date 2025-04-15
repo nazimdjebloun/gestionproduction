@@ -1,21 +1,22 @@
 "use server";
 import axiosInstance from "@/lib/axios";
 import { z } from "zod";
+import { ProductionFileformSchema } from "@/schemas/formSchema";
+import { ProductionFileOrderformSchema } from "@/schemas/formSchema";
 
 export default async function CreateProductionFileAction(prevState, formData) {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const data = {
-    department: formData.get("department"),
+    folder: formData.get("folder"),
     shop: formData.get("shop"),
   };
-  console.log(data);
   //geting the selected products and passign them as an array of objects
-  const productsStrings = formData.getAll("products[]");
-  let selectedProducts = [];
+  const ordersStrings = formData.getAll("orders[]");
+  let selectedOrders = [];
   try {
-    selectedProducts = productsStrings.map((productString) =>
-      JSON.parse(productString)
+    selectedOrders = ordersStrings.map((orderString) =>
+      JSON.parse(orderString)
     );
   } catch (error) {
     console.error("Error parsing product JSON:", error);
@@ -25,20 +26,17 @@ export default async function CreateProductionFileAction(prevState, formData) {
       errors: error,
     };
   }
-  console.log("selectedProducts data:", selectedProducts);
 
   try {
-    // const validatedData = ClientFolderformSchema.parse(data);
-    // console.log("Validated data:", validatedData.client);
-
-    // const validatedProducts = ClientFolderProductformSchema.parse({
-    //   selectedProducts,
-    // });
-    // console.log("Validated data:", validatedProducts.selectedProducts);
-
-    // const response = await axiosInstance.post("/api/clientfolder", {
-    //   client: validatedData.client,
-    //   selectedProducts: validatedProducts.selectedProducts,
+    const validatedData = ProductionFileformSchema.parse(data);
+    console.log(validatedData);
+    const validatedOrders = ProductionFileOrderformSchema.parse({
+      selectedOrders,
+    });
+    console.log(validatedOrders);
+    // const response = await axiosInstance.post("/api/clientfolders", {
+    //   data: validatedData,
+    //   selectedOrders: validatedProducts.selectedOrders,
     // });
 
     return {

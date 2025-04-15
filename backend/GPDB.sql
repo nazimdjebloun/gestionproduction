@@ -55,6 +55,15 @@ CREATE TABLE IF NOT EXISTS public.dossier
     CONSTRAINT dossier_pkey PRIMARY KEY (id_dossier)
 );
 
+ALTER TABLE dossier
+ADD COLUMN id_departement uuid,
+ADD CONSTRAINT fk_id_departement
+FOREIGN KEY (id_departement)
+REFERENCES departement(id_departement)
+ON UPDATE CASCADE
+ON DELETE SET NULL;
+
+
 CREATE TABLE IF NOT EXISTS public.employe
 (
     id_employe uuid NOT NULL DEFAULT uuid_generate_v4(),

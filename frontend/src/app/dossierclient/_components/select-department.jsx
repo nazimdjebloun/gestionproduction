@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -9,22 +9,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDepartments } from "@/hooks/fetsh-data";
-export default function SelectDepartment({
-  setDepartment,
-  state,
-  department,
-  // departmentValues,
-}) {
-  const { data: departments, isLoading, refresh } = useDepartments();
+export default function SelectDepartment({ setDepartment, state, department }) {
+  const { data: departments = [], isLoading, refresh } = useDepartments();
+  // useEffect(() => {
+  //   console.log("Current department value:", department);
+  // }, [department]);
   return (
     <div>
       <p className="p-1">Departement</p>
       <Select
-        defaultValue={departments.length > 0 ? departments[0].id : ""}
         id="department"
         name="department"
-        value={department}
-        onValueChange={setDepartment}
+        // value={department || ""}
+        // onValueChange={setDepartment}
       >
         {/* <Input id="department" name="department" /> */}
         <SelectTrigger className="w-fit">
@@ -33,16 +30,21 @@ export default function SelectDepartment({
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Departement</SelectLabel>
-            {departments.map((department) => (
-              <SelectItem
-                key={department.id_departement}
-                value={department.id_departement}
-              >
-                {department.nom_departement}
-              </SelectItem>
-            ))}
-            {/* <SelectItem value="production">Production</SelectItem>
-            <SelectItem value="affichage">Affichage</SelectItem> */}
+
+            {departments && departments.length > 0 ? (
+              departments.map((department) => (
+                <SelectItem
+                  key={department.id_departement}
+                  value={department.id_departement}
+                >
+                  {department.nom_departement}
+                </SelectItem>
+              ))
+            ) : (
+              <SelectLabel>
+                {isLoading ? "Chargement..." : "Aucun département disponible"}
+              </SelectLabel>
+            )}
           </SelectGroup>
         </SelectContent>
       </Select>
@@ -53,4 +55,15 @@ export default function SelectDepartment({
       )}
     </div>
   );
+}
+
+{
+  /* {departments.map((department) => (
+              <SelectItem
+                key={department.id_departement}
+                value={department.id_departement}
+              >
+                {department.nom_departement}
+              </SelectItem>
+            ))} */
 }

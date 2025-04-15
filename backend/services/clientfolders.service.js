@@ -25,21 +25,16 @@ const clientFolderService = {
   },
 
   // Create new client
-  createClientFolder: async (client, selectedProducts) => {
-    const  id_client = client;
-    const  products = selectedProducts;
-
-    // Insert the folder and get the newly created dossier
+  createClientFolder: async (data, selectedProducts) => {
+    const { client, department } = data;
+    const products = selectedProducts;
     const folderResult = await pool.query(
-      "INSERT INTO dossier (id_client) VALUES ($1) RETURNING *",
-      [id_client]
+      "INSERT INTO dossier (id_client, id_departement) VALUES ($1,$2) RETURNING *",
+      [client, department]
     );
-    const folder = folderResult.rows[0]; 
-    const id_dossier = folder.id_dossier; // Assuming your PK is called this
-      console.log("client ", id_client);
-      console.log("products ", products);
-      console.log("dossier ", id_dossier);
-    // Insert each product into detail_commande
+    const folder = folderResult.rows[0];
+    const id_dossier = folder.id_dossier;
+
     const insertResults = await Promise.all(
       products.map((product) =>
         pool.query(
@@ -53,7 +48,7 @@ const clientFolderService = {
             product.width ?? null,
             product.height ?? null,
             product.id_produit,
-            id_dossier, 
+            id_dossier,
           ]
         )
       )
@@ -63,7 +58,6 @@ const clientFolderService = {
       "Inserted details:",
       insertResults.map((r) => r.rows[0])
     );
-    console.log("Created folder:", folder);
 
     return folder;
   },

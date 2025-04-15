@@ -9,6 +9,9 @@ router.get("/", shopController.getAllShops);
 // GET /api/shops/:id - get one shop
 router.get("/:id", shopController.getShopById);
 
+// GET /api/shops/:id - get one shop by department id
+router.get("/dep/:id", shopController.getShopByDepartmentId);
+
 // POST /api/shops - create a new shop
 router.post("/", shopController.createShop);
 

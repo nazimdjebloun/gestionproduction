@@ -2,25 +2,29 @@ import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
-export default function SelectedProductsCard({
-  selectedProducts,
-  handleRemoveProduct,
-  state,
-}) {
+export default function SelectedOrdersCard({ orders, setSelectedOrders }) {
+  const handleRemoveProduct = (id_detail_commande) => {
+    setSelectedOrders(
+      orders.filter((p) => p.id_detail_commande !== id_detail_commande)
+    );
+    toast("Product removed");
+  };
+
   return (
     <div>
       <div className="border rounded-md">
         <div className="p-4 border-b bg-muted/50">
           <h3 className="font-medium">Selected Products</h3>
         </div>
-        {selectedProducts.length === 0 ? (
+        {orders.length === 0 ? (
           <div className="p-4 text-center text-muted-foreground">
-            Aucun produit sélectionné
+            Aucune commande sélectionné
           </div>
         ) : (
           <div className="divide-y-1">
-            {selectedProducts.map((product, index) => (
+            {orders.map((order, index) => (
               <div
                 key={index}
                 className="p-4 flex justify-between items-center"
@@ -28,29 +32,29 @@ export default function SelectedProductsCard({
                 <Input
                   readOnly
                   type="hidden"
-                  name="products[]"
-                  value={JSON.stringify(product)} // Serialize the whole object
+                  name="orders[]"
+                  value={JSON.stringify(order)} // Serialize the whole object
                 />
                 <div className="flex justify-between items-center  w-full">
                   <div className="">
                     <div className="font-medium gap-3 flex">
-                      <span className="font-bold">{product.quantity}</span>
-                      <p>{product.designation_produit}</p>
+                      <span className="font-bold">{order.quantite}</span>
+                      <p>{order.id_produit}</p>
                     </div>
                     <div className="">
-                      {product.productDetails && (
+                      {order.details && (
                         <div className="text-sm  mt-1 text-muted-foreground space-x-2">
                           <span className="font-bold">Details :</span>
-                          <span>{product.productDetails}</span>
+                          <span>{order.details}</span>
                         </div>
                       )}
 
-                      {product.surface && (
+                      {order.height && (
                         <div className="text-sm mt-1 text-muted-foreground space-x-2">
                           <span className="font-bold"> surface :</span>
-                          <span>{product.surface.height}</span>
+                          <span>{order.epaisseur}</span>
                           <span>X</span>
-                          <span>{product.surface.width} </span>
+                          <span>{order.largeur} </span>
                         </div>
                       )}
                     </div>
@@ -61,12 +65,12 @@ export default function SelectedProductsCard({
                   type="button"
                   variant="ghost"
                   size="icon"
-                  onClick={() => handleRemoveProduct(product.id_produit)}
+                  onClick={() => handleRemoveProduct(order.id_detail_commande)}
                   className="text-destructive hover:text-destructive/90 hover:bg-destructive/10"
                 >
                   <Trash2 className="h-4 w-4" />
                   <span className="sr-only">
-                    Remove {product.designation_produit}
+                    Remove {order.designation_produit}
                   </span>
                 </Button>
               </div>
@@ -74,11 +78,6 @@ export default function SelectedProductsCard({
           </div>
         )}
       </div>
-      {state?.errors?.selectedOrders && (
-        <p className="text-sm text-red-500">
-          {state.errors.selectedProducts[0]}
-        </p>
-      )}
     </div>
   );
 }

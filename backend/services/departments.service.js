@@ -23,6 +23,24 @@ const departmentService = {
     );
     return result.rows[0];
   },
+  // Get single client by ID
+  // getDepartmentByFodlerId: async (id_depatement) => {
+  //   const result = await pool.query(
+  //     "SELECT * FROM departement WHERE id_depatement = $1",
+  //     [id_depatement]
+  //   );
+  //   return result.rows[0];
+  // },
+  getDepartmentByFolderId: async (folderId) => {
+    const result = await pool.query(
+      `SELECT d.* 
+     FROM departement d
+     JOIN dossier ds ON d.id_departement = ds.id_departement
+     WHERE ds.id_dossier = $1`,
+      [folderId]
+    );
+    return result.rows[0]; // return null or the department object
+  },
 
   // Create new client
   createDepartment: async (departmentData) => {

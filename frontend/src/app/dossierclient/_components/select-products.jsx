@@ -52,11 +52,44 @@ export default function SelectProducts({
           <CommandInput placeholder="Recherche..." />
           <CommandList>
             <CommandEmpty>Aucun produit trouve.</CommandEmpty>
-            <CommandGroup>
+            {!availableProducts || availableProducts.length === 0 ? (
+              <div className="px-4 py-2 text-sm text-muted-foreground">
+                0 produits.
+              </div>
+            ) : (
+              <CommandGroup>
+                {availableProducts.map((product) => (
+                  <CommandItem
+                    key={product.id_produit}
+                    value={product.designation_produit}
+                    onSelect={() => {
+                      setSelectedProductId(
+                        product.id_produit === selectedProductId
+                          ? ""
+                          : product.id_produit
+                      );
+                      setOpen(false);
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        selectedProductId === product.id_produit
+                          ? "opacity-100"
+                          : "opacity-0"
+                      )}
+                    />
+                    <span>{product.designation_produit}</span>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
+
+            {/* <CommandGroup>
               {availableProducts.map((product) => (
                 <CommandItem
-                  // key=`${product.id}-${index}`
-                  key={product.id_produit}
+                  key={`${product.id}-${index}`}
+                  // key={product.id_produit}
                   value={product.designation_produit}
                   onSelect={() => {
                     setSelectedProductId(
@@ -78,7 +111,7 @@ export default function SelectProducts({
                   <span>{product.designation_produit}</span>
                 </CommandItem>
               ))}
-            </CommandGroup>
+            </CommandGroup> */}
           </CommandList>
         </Command>
       </PopoverContent>
