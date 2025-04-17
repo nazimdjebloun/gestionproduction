@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS public.atelier
     id_atelier uuid NOT NULL DEFAULT uuid_generate_v4(),
     nom_atelier text COLLATE pg_catalog."default" NOT NULL,
     id_departement uuid NOT NULL,
+    created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT atelier_pkey PRIMARY KEY (id_atelier)
 );
 
@@ -18,6 +20,8 @@ CREATE TABLE IF NOT EXISTS public.client
     adresse_client text COLLATE pg_catalog."default" NOT NULL,
     tel_client text COLLATE pg_catalog."default" NOT NULL,
     email_client text COLLATE pg_catalog."default",
+    created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT client_pkey PRIMARY KEY (id_client)
 );
 
@@ -25,6 +29,8 @@ CREATE TABLE IF NOT EXISTS public.commande_fiche
 (
     id_fiche_production uuid NOT NULL,
     id_detail_commande uuid NOT NULL,
+    created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT commande_fiche_pkey PRIMARY KEY (id_fiche_production, id_detail_commande)
 );
 
@@ -32,6 +38,8 @@ CREATE TABLE IF NOT EXISTS public.departement
 (
     id_departement uuid NOT NULL DEFAULT uuid_generate_v4(),
     nom_departement text COLLATE pg_catalog."default" NOT NULL,
+    created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT departement_pkey PRIMARY KEY (id_departement)
 );
 
@@ -44,25 +52,21 @@ CREATE TABLE IF NOT EXISTS public.detail_commande
     epaisseur character varying(50) COLLATE pg_catalog."default",
     id_produit uuid NOT NULL,
     id_dossier uuid NOT NULL,
+    created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT detail_commande_pkey PRIMARY KEY (id_detail_commande)
 );
 
 CREATE TABLE IF NOT EXISTS public.dossier
 (
     id_dossier uuid NOT NULL DEFAULT uuid_generate_v4(),
+    num_bc text not null 
     date_creation timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     id_client uuid NOT NULL,
+    id_departement uuid NOT NULL,
+    created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT dossier_pkey PRIMARY KEY (id_dossier)
 );
-
-ALTER TABLE dossier
-ADD COLUMN id_departement uuid,
-ADD CONSTRAINT fk_id_departement
-FOREIGN KEY (id_departement)
-REFERENCES departement(id_departement)
-ON UPDATE CASCADE
-ON DELETE SET NULL;
-
 
 CREATE TABLE IF NOT EXISTS public.employe
 (
@@ -72,6 +76,8 @@ CREATE TABLE IF NOT EXISTS public.employe
     date_nais date NOT NULL,
     tel_employe text COLLATE pg_catalog."default" NOT NULL,
     id_atelier uuid NOT NULL,
+    created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT employe_pkey PRIMARY KEY (id_employe)
 );
 
@@ -80,6 +86,8 @@ CREATE TABLE IF NOT EXISTS public.fiche_production
     id_fiche_production uuid NOT NULL DEFAULT uuid_generate_v4(),
     id_atelier uuid NOT NULL,
     id_dossier uuid NOT NULL,
+    created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fiche_production_pkey PRIMARY KEY (id_fiche_production)
 );
 
@@ -88,6 +96,8 @@ CREATE TABLE IF NOT EXISTS public.matiere_premiere
     id_matiere uuid NOT NULL DEFAULT uuid_generate_v4(),
     designation_matiere text COLLATE pg_catalog."default" NOT NULL,
     description_matiere text COLLATE pg_catalog."default",
+    created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT matiere_premiere_pkey PRIMARY KEY (id_matiere)
 );
 
@@ -97,6 +107,8 @@ CREATE TABLE IF NOT EXISTS public.matiere_utilise
     id_matiere uuid NOT NULL,
     quantite text COLLATE pg_catalog."default",
     prix_unite text COLLATE pg_catalog."default",
+    created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT matiere_utilise_pkey PRIMARY KEY (id_fiche_production, id_matiere)
 );
 
@@ -106,6 +118,8 @@ CREATE TABLE IF NOT EXISTS public.produit
     designation_produit text COLLATE pg_catalog."default" NOT NULL,
     description_produit text COLLATE pg_catalog."default",
     id_type_produit uuid NOT NULL,
+    created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT produit_pkey PRIMARY KEY (id_produit)
 );
 
@@ -116,6 +130,7 @@ CREATE TABLE IF NOT EXISTS public.pv
     date_creation timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     reserve text COLLATE pg_catalog."default",
     id_dossier uuid NOT NULL,
+    created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT pv_pkey PRIMARY KEY (id_pv)
 );
 
@@ -123,6 +138,8 @@ CREATE TABLE IF NOT EXISTS public.travaille
 (
     id_fiche_production uuid NOT NULL,
     id_employe uuid NOT NULL,
+    created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT travaille_pkey PRIMARY KEY (id_fiche_production, id_employe)
 );
 
@@ -130,6 +147,8 @@ CREATE TABLE IF NOT EXISTS public.type_produit
 (
     id_type_produit uuid NOT NULL DEFAULT uuid_generate_v4(),
     designation_type_produit text COLLATE pg_catalog."default",
+    created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT type_produit_pkey PRIMARY KEY (id_type_produit)
 );
 
@@ -173,6 +192,13 @@ ALTER TABLE IF EXISTS public.dossier
     REFERENCES public.client (id_client) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE CASCADE;
+
+
+ALTER TABLE IF EXISTS public.dossier
+    ADD CONSTRAINT fk_id_departement FOREIGN KEY (id_departement)
+    REFERENCES public.departement (id_departement) MATCH SIMPLE
+    ON UPDATE CASCADE
+    ON DELETE SET NULL;
 
 
 ALTER TABLE IF EXISTS public.employe
@@ -236,5 +262,81 @@ ALTER TABLE IF EXISTS public.travaille
     REFERENCES public.fiche_production (id_fiche_production) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
+
+
+
+
+
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE TRIGGER trg_set_updated_at_client
+BEFORE UPDATE ON client
+FOR EACH ROW
+EXECUTE PROCEDURE update_updated_at_column();
+
+CREATE TRIGGER trg_set_updated_at_atelier
+BEFORE UPDATE ON atelier
+FOR EACH ROW
+EXECUTE PROCEDURE update_updated_at_column();
+
+CREATE TRIGGER trg_set_updated_at_detail_commande
+BEFORE UPDATE ON detail_commande
+FOR EACH ROW
+EXECUTE PROCEDURE update_updated_at_column();
+
+CREATE TRIGGER trg_set_updated_at_commande_fiche
+BEFORE UPDATE ON commande_fiche
+FOR EACH ROW
+EXECUTE PROCEDURE update_updated_at_column();
+
+CREATE TRIGGER trg_set_updated_at_matiere_utilise
+BEFORE UPDATE ON matiere_utilise
+FOR EACH ROW
+EXECUTE PROCEDURE update_updated_at_column();
+
+CREATE TRIGGER trg_set_updated_at_travaille
+BEFORE UPDATE ON travaille
+FOR EACH ROW
+EXECUTE PROCEDURE update_updated_at_column();
+
+CREATE TRIGGER trg_set_updated_at_departement
+BEFORE UPDATE ON departement
+FOR EACH ROW
+EXECUTE PROCEDURE update_updated_at_column();
+
+CREATE TRIGGER trg_set_updated_at_employe
+BEFORE UPDATE ON employe
+FOR EACH ROW
+EXECUTE PROCEDURE update_updated_at_column();
+
+CREATE TRIGGER trg_set_updated_at_fiche_production
+BEFORE UPDATE ON fiche_production
+FOR EACH ROW
+EXECUTE PROCEDURE update_updated_at_column();
+
+CREATE TRIGGER trg_set_updated_at_matiere_premiere
+BEFORE UPDATE ON matiere_premiere
+FOR EACH ROW
+EXECUTE PROCEDURE update_updated_at_column();
+
+CREATE TRIGGER trg_set_updated_at_produit
+BEFORE UPDATE ON produit
+FOR EACH ROW
+EXECUTE PROCEDURE update_updated_at_column();
+
+CREATE TRIGGER trg_set_updated_at_type_produit
+BEFORE UPDATE ON type_produit
+FOR EACH ROW
+EXECUTE PROCEDURE update_updated_at_column();
+
+
 
 END;

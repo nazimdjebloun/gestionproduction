@@ -11,15 +11,25 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { toast } from "sonner";
-import { Loader2, Check, ChevronsUpDown } from "lucide-react";
+import { Loader2, Check, ChevronsUpDown, Plus } from "lucide-react";
 
 import CreateClientFolderAction from "@/actions/create-clientFolder";
 import SelectClient from "./_components/select-client";
 import ProductCard from "./_components/product-card";
 import SelectDepartment from "./_components/select-department";
 import axiosInstance from "@/lib/axios";
+import { Input } from "@/components/ui/input";
+import { Label } from "@radix-ui/react-label";
+import { useQueryClient } from "@tanstack/react-query";
+// import CreateFolder from "./creationdossier/create-folder";
+import Link from "next/link";
+import { TableBody } from "@/components/ui/table";
+import FolderTableBody from "./_data/table-body";
+import FolderTable from "./_data/folder-table";
 
 export default function DossierClient() {
+  const queryClient = useQueryClient();
+
   const [state, formAction, isPending] = useActionState(
     CreateClientFolderAction,
     null
@@ -36,21 +46,22 @@ export default function DossierClient() {
   //   }
   // }, [departments]);
 
-  useEffect(() => {
-    if (state?.success === true) {
-      setSelectedProducts([]);
-      setClient("");
-      setDepartment("");
-      toast.success(state?.message);
-    }
-    if (state?.success === false) {
-      toast.error(state?.message);
-    }
-  }, [state]);
+  // useEffect(() => {
+  //   if (state?.success === true) {
+  //     setSelectedProducts([]);
+  //     setClient("");
+  //     setDepartment("");
+  //     toast.success(state?.message);
+  //     queryClient.invalidateQueries(["folders"]);
+  //   }
+  //   if (state?.success === false) {
+  //     toast.error(state?.message);
+  //   }
+  // }, [state]);
 
   return (
-    <div className=" w-full flex items-center justify-center  5 m-2 rounded-xl">
-      <Card className="w-[800px] h-fit">
+    <div className="w-full ">
+      {/* <Card className="w-[800px] h-fit">
         <form action={formAction} className="space-y-4">
           <CardHeader className="flex justify-between">
             <div>
@@ -66,7 +77,7 @@ export default function DossierClient() {
             />
           </CardHeader>
           <CardContent>
-            <div className="">
+            <div className="space-y-2">
               <SelectClient
                 // clients={clients}
                 value={client}
@@ -76,6 +87,26 @@ export default function DossierClient() {
                 <p className="text-sm text-red-500 px-2">
                   {state.errors.client[0]}
                 </p>
+              )}
+              <div className="flex flex-col ">
+                <Label htmlFor="name" className="p-1">
+                  Numero bon commande
+                </Label>
+                <Input
+                  id="bc"
+                  name="bc"
+                  placeholder="BC/Exemple/123"
+                  defaultValue={state?.inputs?.bc}
+                  type="text"
+                  // className={
+                  //   state?.errors?.bc
+                  //     ? "border-red-500 focus-visible:ring-red-500"
+                  //     : ""
+                  // }
+                />
+              </div>
+              {state?.errors?.bc && (
+                <p className="text-sm text-red-500">{state.errors.bc[0]}</p>
               )}
             </div>
 
@@ -109,7 +140,19 @@ export default function DossierClient() {
           </CardContent>
           <CardFooter></CardFooter>
         </form>
-      </Card>
+      </Card> */}
+      <div className="flex justify-between w-full p-2">
+        <h1 className="text-3xl">Dossiers Client</h1>
+        <Link href="./dossierclient/creationdossier" prefetch={true}>
+          <Button variant={"outline"}>
+            <Plus />
+            Ajouter un dossier client
+          </Button>
+        </Link>
+      </div>
+      <div>
+        <FolderTable />
+      </div>
     </div>
   );
 }

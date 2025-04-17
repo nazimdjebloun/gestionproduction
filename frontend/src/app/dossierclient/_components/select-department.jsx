@@ -11,9 +11,7 @@ import {
 import { useDepartments } from "@/hooks/fetsh-data";
 export default function SelectDepartment({ setDepartment, state, department }) {
   const { data: departments = [], isLoading, refresh } = useDepartments();
-  // useEffect(() => {
-  //   console.log("Current department value:", department);
-  // }, [department]);
+
   return (
     <div>
       <p className="p-1">Departement</p>
@@ -24,7 +22,7 @@ export default function SelectDepartment({ setDepartment, state, department }) {
         // onValueChange={setDepartment}
       >
         {/* <Input id="department" name="department" /> */}
-        <SelectTrigger className="w-fit">
+        <SelectTrigger className="w-[100%]">
           <SelectValue placeholder="Selectionnez un Departement" />
         </SelectTrigger>
         <SelectContent>

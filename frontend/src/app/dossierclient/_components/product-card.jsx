@@ -87,10 +87,19 @@ export default function ProductCard({
     toast.success(`${productToAdd.designation_produit} ajouter `);
   };
 
-  const handleRemoveProduct = (id_produit) => {
-    setSelectedProducts(
-      selectedProducts.filter((p) => p.id_produit !== id_produit)
-    );
+  // const handleRemoveProduct = (id_produit) => {
+
+  //   setSelectedProducts(
+  //     selectedProducts.filter((p) => p.id_produit !== id_produit)
+  //   );
+  //   toast("Product removed");
+  // };
+  const handleRemoveProduct = (index) => {
+    setSelectedProducts((prev) => {
+      const updated = [...prev];
+      updated.splice(index, 1);
+      return updated;
+    });
     toast("Product removed");
   };
 

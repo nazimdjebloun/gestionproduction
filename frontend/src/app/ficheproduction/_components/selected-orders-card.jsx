@@ -49,7 +49,7 @@ export default function SelectedOrdersCard({ orders, setSelectedOrders }) {
                         </div>
                       )}
 
-                      {order.height && (
+                      {order.largeur && (
                         <div className="text-sm mt-1 text-muted-foreground space-x-2">
                           <span className="font-bold"> surface :</span>
                           <span>{order.epaisseur}</span>

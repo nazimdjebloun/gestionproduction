@@ -26,11 +26,11 @@ const clientFolderService = {
 
   // Create new client
   createClientFolder: async (data, selectedProducts) => {
-    const { client, department } = data;
+    const { client, department, bc } = data;
     const products = selectedProducts;
     const folderResult = await pool.query(
-      "INSERT INTO dossier (id_client, id_departement) VALUES ($1,$2) RETURNING *",
-      [client, department]
+      "INSERT INTO dossier (id_client, id_departement,num_bc) VALUES ($1,$2,$3) RETURNING *",
+      [client, department, bc]
     );
     const folder = folderResult.rows[0];
     const id_dossier = folder.id_dossier;

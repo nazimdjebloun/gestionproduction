@@ -45,12 +45,12 @@ export default function SelectedProductsCard({
                         </div>
                       )}
 
-                      {product.surface && (
+                      {product.height && (
                         <div className="text-sm mt-1 text-muted-foreground space-x-2">
                           <span className="font-bold"> surface :</span>
-                          <span>{product.surface.height}</span>
+                          <span>{product.height}</span>
                           <span>X</span>
-                          <span>{product.surface.width} </span>
+                          <span>{product.width} </span>
                         </div>
                       )}
                     </div>
@@ -61,7 +61,7 @@ export default function SelectedProductsCard({
                   type="button"
                   variant="ghost"
                   size="icon"
-                  onClick={() => handleRemoveProduct(product.id_produit)}
+                  onClick={() => handleRemoveProduct(index)}
                   className="text-destructive hover:text-destructive/90 hover:bg-destructive/10"
                 >
                   <Trash2 className="h-4 w-4" />
@@ -74,7 +74,7 @@ export default function SelectedProductsCard({
           </div>
         )}
       </div>
-      {state?.errors?.selectedOrders && (
+      {state?.errors?.selectedProducts && (
         <p className="text-sm text-red-500">
           {state.errors.selectedProducts[0]}
         </p>

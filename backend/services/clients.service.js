@@ -14,7 +14,7 @@ import pool from "../config/db.js"; // PostgreSQL pool
 const clientService = {
   // Get all clients
   getAllClients: async () => {
-    const result = await pool.query("SELECT * FROM client");
+    const result = await pool.query("SELECT * FROM client ORDER BY nom_client");
     return result.rows;
   },
 
@@ -40,10 +40,10 @@ const clientService = {
 
   // Update client
   updateClient: async (id, clientData) => {
-    const { name, email, phone } = clientData;
+    const { name, email, phone, address } = clientData;
     const result = await pool.query(
-      "UPDATE client SET nom_client = $1, email_client = $2, tel_client = $3 WHERE id_client = $4 RETURNING *",
-      [name, email, phone, id]
+      "UPDATE client SET nom_client = $1, email_client = $2, tel_client = $3, adresse_client =$4 WHERE id_client = $5 RETURNING *",
+      [name, email, phone, address, id]
     );
     return result.rows[0];
   },

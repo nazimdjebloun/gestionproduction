@@ -12,6 +12,9 @@ export  const ClientformSchema = z.object({
 export const ClientFolderformSchema = z.object({
   client: z.string().min(1, { message: "veuillez choisir un client" }),
   department: z.string().min(1, { message: "veuillez choisir un departement" }),
+  bc: z
+    .string()
+    .min(1, { message: "veuillez inserer un numero de bon de commande" }),
 });
 export const ClientFolderProductformSchema = z.object({
   selectedProducts: z.array(z.any()).min(1, "Au moins un produit est requis"),

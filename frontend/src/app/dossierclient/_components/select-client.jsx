@@ -42,7 +42,7 @@ import CreateClientFolderAction from "@/actions/create-clientFolder";
 import { useClients } from "@/hooks/fetsh-data";
 
 // export default function SelectClient({ value, setValue }) {
-export default function SelectClient({ value, setValue }) {
+export default function SelectClient({ value, setValue, state }) {
   const [open, setOpen] = useState(false);
   const { data: clients, isLoading, refresh } = useClients();
   const selectedClient = clients.find((client) => client.id_client === value);
@@ -174,6 +174,9 @@ export default function SelectClient({ value, setValue }) {
           </Command>
         </PopoverContent>
       </Popover>
+      {state?.errors?.client && (
+        <p className="text-sm text-red-500 px-2">{state.errors.client[0]}</p>
+      )}
     </div>
   );
 }

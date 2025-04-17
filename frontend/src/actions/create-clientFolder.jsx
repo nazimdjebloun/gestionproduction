@@ -10,6 +10,7 @@ export default async function CreateClientFolderAction(prevState, formData) {
   const data = {
     client: formData.get("client"),
     department: formData.get("department"),
+    bc: formData.get("bc"),
   };
   console.log(data);
 
@@ -28,6 +29,8 @@ export default async function CreateClientFolderAction(prevState, formData) {
       errors: error,
     };
   }
+  console.log(selectedProducts);
+
 
   try {
     //validation of clientr folder data
