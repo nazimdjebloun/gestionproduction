@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from '@/components/ui/skeleton';
 import { Edit2, MoreHorizontal, User } from "lucide-react";
+import { formatDateTime } from "@/utils/formateDate";
+
 export default function FolderTableBody({ paginatedData, isPending, isError }) {
   return (
     <TableBody className="bg-background ">
@@ -40,6 +42,9 @@ export default function FolderTableBody({ paginatedData, isPending, isError }) {
             <TableCell>
               <Skeleton className="h-6 w-[250px]" />
             </TableCell>
+            <TableCell>
+              <Skeleton className="h-6 w-[250px]" />
+            </TableCell>
           </TableRow>
         ))
       ) : isError ? (
@@ -52,9 +57,9 @@ export default function FolderTableBody({ paginatedData, isPending, isError }) {
         paginatedData.map((folder) => (
           <TableRow key={folder.id_dossier}>
             <TableCell className="font-medium">{folder.num_bc}</TableCell>
-            <TableCell>{folder.id_client}</TableCell>
-            <TableCell>{folder.date_creation}</TableCell>
-            <TableCell>{folder.id_departement}</TableCell>
+            <TableCell>{folder.nom_client}</TableCell>
+            <TableCell>{formatDateTime(folder.date_creation)}</TableCell>
+            <TableCell>{folder.nom_departement}</TableCell>
             <TableCell className="max-w-[300px] truncate">en cours</TableCell>
             <TableCell>
               <DropdownMenu>

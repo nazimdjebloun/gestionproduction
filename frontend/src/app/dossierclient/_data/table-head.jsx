@@ -61,11 +61,11 @@ export default function FolderTableHeader({ handleSort, renderSortIcon }) {
         </TableHead>
         <TableHead
           className="cursor-pointer"
-          onClick={() => handleSort("id_client")}
+          onClick={() => handleSort("nom_client")}
         >
           <div className="flex items-center">
             Nom client
-            {renderSortIcon("id_client")}
+            {renderSortIcon("nom_client")}
           </div>
         </TableHead>
         <TableHead
@@ -79,11 +79,11 @@ export default function FolderTableHeader({ handleSort, renderSortIcon }) {
         </TableHead>
         <TableHead
           className="cursor-pointer"
-          onClick={() => handleSort("date_creation")}
+          onClick={() => handleSort("nom_departement")}
         >
           <div className="flex items-center">
             Departement
-            {renderSortIcon("id_departement")}
+            {renderSortIcon("nom_departement")}
           </div>
         </TableHead>
         <TableHead

@@ -23,154 +23,163 @@ import { toast } from "sonner";
 import FolderTableFooter from "./table-footer";
 import FolderTableHeader from "./table-head";
 import FolderTableBody from "./table-body";
+import { formatDateTime } from "@/utils/formateDate";
 
-const fetchFolders= async () => {
+const fetchFolders = async () => {
   const response = await axiosInstance.get("/api/clientfolders");
   console.log(response.data.data);
   return response.data.data;
 };
 
-
 export default function FolderTable() {
-    const [searchQuery, setSearchQuery] = useState("");
-    
-      const [sortField, setSortField] = useState("");
-      const [sortDirection, setSortDirection] = useState("asc");
-    
-      const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 15;
-    
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const [sortField, setSortField] = useState("");
+  const [sortDirection, setSortDirection] = useState("asc");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15;
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ["Folders"],
     queryFn: fetchFolders,
   });
 
-    
-     const handleResetSort = () => {
-       setSortField("");
-       setSortDirection("asc");
-       setCurrentPage(1);
-    };
-      const handleSort = (field) => {
-        if (sortField === field) {
-          setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-        } else {
-          setSortField(field);
-          setSortDirection("asc");
-        }
+  const handleResetSort = () => {
+    setSortField("");
+    setSortDirection("asc");
+    setCurrentPage(1);
+  };
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
 
-        setCurrentPage(1);
-      };
+    setCurrentPage(1);
+  };
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
-    const renderSortIcon = (field) => {
-      if (sortField !== field) return null;
-      return sortDirection === "asc" ? (
-        <ChevronUp className="ml-1 h-4 w-4" />
-      ) : (
-        <ChevronDown className="ml-1 h-4 w-4" />
-      );
-    };
-      const filteredAndSortedData = Array.isArray(data)
-        ? [...data]
-            // Filter by search query
-            .filter((folder) => {
-              if (!searchQuery.trim()) return true;
-              if (!client) return false;
+  const renderSortIcon = (field) => {
+    if (sortField !== field) return null;
+    return sortDirection === "asc" ? (
+      <ChevronUp className="ml-1 h-4 w-4" />
+    ) : (
+      <ChevronDown className="ml-1 h-4 w-4" />
+    );
+  };
 
-              const query = searchQuery.toLowerCase();
-              return (
-                (folder.num_bc || "").toLowerCase().includes(query) 
-              );
-            })
+  const filteredAndSortedData = Array.isArray(data)
+    ? [...data]
+        // Filter by search query
+        .filter((folder) => {
+          if (!searchQuery.trim()) return true;
+          if (!folder) return false;
 
-            // Sort by selected field
-            .sort((a, b) => {
-              if (!a || !b) return 0;
+          const query = searchQuery.toLowerCase();
+          // Format the date for comparison
+          const formattedDate = folder.date_creation
+            ? formatDateTime(folder.date_creation).toLowerCase()
+            : "";
+          return (
+            (folder.num_bc || "").toLowerCase().includes(query) ||
+            (folder.nom_client || "").toLowerCase().includes(query) ||
+            (folder.nom_departement || "").toLowerCase().includes(query) ||
+            (folder.etas || "").toLowerCase().includes(query) ||
+            // (folder.date_creation || "").toLowerCase().includes(query)
+            formattedDate.includes(query)
+          );
+        })
 
-              const valueA = (a[sortField] || "").toLowerCase();
-              const valueB = (b[sortField] || "").toLowerCase();
+        // Sort by selected field
+        .sort((a, b) => {
+          if (!a || !b) return 0;
 
-              if (sortDirection === "asc") {
-                return valueA.localeCompare(valueB);
-              } else {
-                return valueB.localeCompare(valueA);
-              }
-            })
-        : [];
- const paginatedData = filteredAndSortedData.slice(
-   (currentPage - 1) * itemsPerPage,
-   currentPage * itemsPerPage
- );
+          const valueA = (a[sortField] || "").toLowerCase();
+          const valueB = (b[sortField] || "").toLowerCase();
 
- // Calculate total pages
- const totalPages = Math.max(
-   1,
-   Math.ceil(filteredAndSortedData.length / itemsPerPage)
- );
+          if (sortDirection === "asc") {
+            return valueA.localeCompare(valueB);
+          } else {
+            return valueB.localeCompare(valueA);
+          }
+        })
+    : [];
+  const paginatedData = filteredAndSortedData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
- // Generate page numbers for pagination
- const getPageNumbers = () => {
-   if (totalPages <= 1) return [1];
+  // Calculate total pages
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredAndSortedData.length / itemsPerPage)
+  );
 
-   const pageNumbers = [];
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    if (totalPages <= 1) return [1];
 
-   if (totalPages <= 5) {
-     // Show all pages if 5 or fewer
-     for (let i = 1; i <= totalPages; i++) {
-       pageNumbers.push(i);
-     }
-   } else {
-     // Always show first page
-     pageNumbers.push(1);
+    const pageNumbers = [];
 
-     // Show ellipsis after first page if current page is > 3
-     if (currentPage > 3) {
-       pageNumbers.push("ellipsis");
-     }
+    if (totalPages <= 5) {
+      // Show all pages if 5 or fewer
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      // Always show first page
+      pageNumbers.push(1);
 
-     // Show current page and adjacent pages
-     const startPage = Math.max(2, currentPage - 1);
-     const endPage = Math.min(totalPages - 1, currentPage + 1);
+      // Show ellipsis after first page if current page is > 3
+      if (currentPage > 3) {
+        pageNumbers.push("ellipsis");
+      }
 
-     for (let i = startPage; i <= endPage; i++) {
-       pageNumbers.push(i);
-     }
+      // Show current page and adjacent pages
+      const startPage = Math.max(2, currentPage - 1);
+      const endPage = Math.min(totalPages - 1, currentPage + 1);
 
-     // Show ellipsis before last page if needed
-     if (currentPage < totalPages - 2) {
-       pageNumbers.push("ellipsis");
-     }
+      for (let i = startPage; i <= endPage; i++) {
+        pageNumbers.push(i);
+      }
 
-     // Always show last page if more than 1 page
-     if (totalPages > 1) {
-       pageNumbers.push(totalPages);
-     }
-   }
+      // Show ellipsis before last page if needed
+      if (currentPage < totalPages - 2) {
+        pageNumbers.push("ellipsis");
+      }
 
-   return pageNumbers;
- };    
-    
+      // Always show last page if more than 1 page
+      if (totalPages > 1) {
+        pageNumbers.push(totalPages);
+      }
+    }
+
+    return pageNumbers;
+  };
+
   return (
-    <div>
-      <div className="flex justify-between">
+    <div className="space-y-4 w-full px-2 ">
+      <div className="flex flex-col sm:flex-row justify-between gap-4">
         <div className="flex items-center gap-2">
-          <Search className="" />
-
-          <Input
-            placeholder="Rechercher des dossier..."
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setCurrentPage(1);
-            }}
-            className=""
-          />
+          <div className="relative w-full sm:w-72">
+            <Input
+              placeholder="Rechercher des dossier..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="pl-10 pr-3"
+            />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          </div>
         </div>
 
         {sortField && (
@@ -194,9 +203,9 @@ export default function FolderTable() {
           </div>
         )}
       </div>
-      <div className="w-full">
+      <div className="w-full ">
         <Card className="p-0 overflow-auto">
-          <Table>
+          <Table className="">
             <FolderTableHeader
               renderSortIcon={renderSortIcon}
               handleSort={handleSort}

@@ -335,9 +335,7 @@ export default function ClientTable({  }) {
                             Affiche client
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => handleEdit(client)}
-                          >
+                          <DropdownMenuItem onClick={() => handleEdit(client)}>
                             <Edit2 />
                             Modifier client
                             {/* <EditClient
