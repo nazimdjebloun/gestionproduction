@@ -17,7 +17,7 @@ const productionFileController = {
   },
   getProductionFileById: async (req, res, next) => {
     try {
-      const productionFile = await productionFileService.getproductionFileById(
+      const productionFile = await productionFileService.getProductionFileById(
         req.params.id
       );
       if (!clientFolder) {
@@ -53,7 +53,7 @@ const productionFileController = {
   },
   updateProductionFile: async (req, res, next) => {
     try {
-      const productionFile = await productionFileService.updateproductionFile(
+      const productionFile = await productionFileService.updateProductionFile(
         req.params.id,
         req.body
       );
@@ -73,7 +73,7 @@ const productionFileController = {
   },
   deleteProductionFile: async (req, res, next) => {
     try {
-      const result = await clientFolderService.deleteClientFolder(
+      const result = await clientFolderService.deleteProductionFile(
         req.params.id
       );
       if (!result) {

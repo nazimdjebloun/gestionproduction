@@ -60,24 +60,28 @@ export default function CustomSidebareMenu() {
         <SidebarGroupContent>
           <SidebarMenu>
             {items.map((item) => {
-              const isActive = pathname === item.url;
+                const isActive =
+                  item.url === "/"
+                    ? pathname === "/"
+                    : pathname.startsWith(item.url) && item.url !== "#";
 
-              return (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    tooltip={item.title}
-                    className={
-                      isActive ? "bg-primary text-primary-foreground " : ""
-                    }
-                  >
-                    <Link href={item.url} className={isActive ? "" : ""}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              );
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      className={`hover:bg-secondary ${
+                        isActive ? "bg-primary text-primary-foreground " : ""
+                      }`}
+                    >
+                      {/* hover:bg-primary hover:text-primary-foreground */}
+                      <Link href={item.url} className={isActive ? "" : ""}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
             })}
           </SidebarMenu>
         </SidebarGroupContent>

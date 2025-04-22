@@ -235,12 +235,18 @@ export function useFolderProducts(folderId) {
 
 export function useFiles() {
   return useFetchData(
-    "/api/productionfile",
+    "/api/productionfiles",
     "productionfiles",
     (productionfiles) =>
       productionfiles.map((productionfile) => ({
         id_fiche_production: productionfile.id_fiche_production,
+        num_bc: productionfile.num_bc,
+        date_creation_dossier: productionfile.date_creation_dossier,
+        date_creation: productionfile.created_at,
         id_atelier: productionfile.id_atelier,
+        nom_client: productionfile.nom_client,
+        nom_atelier: productionfile.nom_atelier,
+        nom_departement: productionfile.nom_departement,
         id_dossier: productionfile.id_dossier,
       }))
   );

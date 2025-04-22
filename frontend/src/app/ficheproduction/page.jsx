@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import SearchFilters from "./_data/search-filters";
 import FileTable from "./_data/file-table";
+// import FileTable from "./_data/file-table";
 
 export default function FicheProduction() {
   return (
