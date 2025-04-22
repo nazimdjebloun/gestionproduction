@@ -194,7 +194,10 @@ export function useFolders() {
     clientfolders.map((clientfolder) => ({
       id_dossier: clientfolder.id_dossier,
       id_client: clientfolder.id_client,
+      nom_client: clientfolder.nom_client,
       id_departement: clientfolder.id_departement,
+      nom_departement: clientfolder.nom_departement,
+      num_bc: clientfolder.num_bc,
     }))
   );
 }
@@ -214,12 +217,13 @@ export function useFolderById(folderId) {
 
 export function useFolderProducts(folderId) {
   return useFetchDataById(
-    "/api/orders/clientfodler",
+    "/api/orders/clientfolder",
     folderId,
     ["clientFolderProducts", folderId],
     (clientFolderProducts) =>
       clientFolderProducts.map((clientFolderProduct) => ({
         id_detail_commande: clientFolderProduct.id_detail_commande,
+        designation_produit: clientFolderProduct.designation_produit,
         quantite: clientFolderProduct.quantite,
         details: clientFolderProduct.details,
         largeur: clientFolderProduct.largeur,

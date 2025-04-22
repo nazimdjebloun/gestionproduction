@@ -26,8 +26,15 @@ const orderService = {
 
   // Get single client by ID
   getOrderByClientFolderId: async (id_dossier) => {
+    // const result = await pool.query(
+    //   "SELECT * FROM detail_commande WHERE id_dossier = $1",
+    //   [id_dossier]
+    // );
     const result = await pool.query(
-      "SELECT * FROM detail_commande WHERE id_dossier = $1",
+      `SELECT dc.*, p.designation_produit,p.description_produit
+     FROM detail_commande dc
+     JOIN produit p ON dc.id_produit = p.id_produit
+     WHERE dc.id_dossier = $1`,
       [id_dossier]
     );
     return result.rows;

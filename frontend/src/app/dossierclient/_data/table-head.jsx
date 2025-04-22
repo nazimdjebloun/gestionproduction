@@ -10,43 +10,36 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import { Button } from "@/components/ui/button";
-import {
-  ChevronDown,
-  ChevronUp,
-  Edit2,
-  MoreHorizontal,
-  Search,
-  SlidersHorizontal,
-  Trash2,
-  User,
-} from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
-// import { Pagination } from "@/components/pagination";
-import axiosInstance from "@/lib/axios";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { toast } from "sonner";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
+export default function FolderTableHeader({
+  // handleSort, renderSortIcon
+  setSortDirection,
+  setSortField,
+  setCurrentPage,
+  sortField,
+  sortDirection,
+}) {
+  const renderSortIcon = (field) => {
+    if (sortField !== field) return null;
+    return sortDirection === "asc" ? (
+      <ChevronUp className="ml-1 h-4 w-4" />
+    ) : (
+      <ChevronDown className="ml-1 h-4 w-4" />
+    );
+  };
 
-export default function FolderTableHeader({ handleSort, renderSortIcon }) {
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+
+    setCurrentPage(1);
+  };
+
   return (
     <TableHeader>
       <TableRow>

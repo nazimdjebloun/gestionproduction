@@ -20,9 +20,19 @@ export const ClientFolderProductformSchema = z.object({
   selectedProducts: z.array(z.any()).min(1, "Au moins un produit est requis"),
 });
 
+// export const ProductionFileformSchema = z.object({
+//   folder: z.string().min(1, { message: "veuillez choisir un dossier client" }),
+//   shop: z.string().min(1, { message: "veuillez choisir un atelier" }),
+// });
 export const ProductionFileformSchema = z.object({
-  folder: z.string().min(1, { message: "veuillez choisir un dossier client" }),
-  shop: z.string().min(1, { message: "veuillez choisir un atelier" }),
+  folder: z.preprocess(
+    (val) => val ?? "",
+    z.string().min(1, { message: "veuillez choisir un dossier client" })
+  ),
+  shop: z.preprocess(
+    (val) => val ?? "",
+    z.string().min(1, { message: "veuillez choisir un atelier" })
+  ),
 });
 export const ProductionFileOrderformSchema = z.object({
   selectedOrders: z.array(z.any()).min(1, "Au moins une commande est requis"),

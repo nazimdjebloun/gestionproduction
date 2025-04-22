@@ -9,7 +9,7 @@ router.get("/", orderController.getAllOrders);
 router.get("/:id", orderController.getOrderById);
 
 // GET single Order
-router.get("/clientfodler/:id", orderController.getOrderByClientFolderId);
+router.get("/clientfolder/:id", orderController.getOrderByClientFolderId);
 
 // // POST new Order
 // router.post("/", orderController.createOrder);

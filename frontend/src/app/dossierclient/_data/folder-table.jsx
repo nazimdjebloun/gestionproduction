@@ -24,19 +24,22 @@ import FolderTableFooter from "./table-footer";
 import FolderTableHeader from "./table-head";
 import FolderTableBody from "./table-body";
 import { formatDateTime } from "@/utils/formateDate";
+import SearchFilters from "./search-filters";
 
 const fetchFolders = async () => {
   const response = await axiosInstance.get("/api/clientfolders");
-  console.log(response.data.data);
+  // console.log(response.data.data);
   return response.data.data;
 };
 
 export default function FolderTable() {
   const [searchQuery, setSearchQuery] = useState("");
+  // const [filteredAndSortedData, setFilteredAndSortedData] = useState("");
 
   const [sortField, setSortField] = useState("");
   const [sortDirection, setSortDirection] = useState("asc");
-
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [selectedFolder, setSelectedFolder] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
 
@@ -45,34 +48,21 @@ export default function FolderTable() {
     queryFn: fetchFolders,
   });
 
-  const handleResetSort = () => {
-    setSortField("");
-    setSortDirection("asc");
-    setCurrentPage(1);
+  const handleEdit = (folder) => {
+    setTimeout(() => {
+      setSelectedFolder(folder);
+      setEditDialogOpen(true);
+    }, 10); // Tiny delay gives DropdownMenu time to close
   };
-  const handleSort = (field) => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortField(field);
-      setSortDirection("asc");
-    }
 
-    setCurrentPage(1);
-  };
+  useEffect(() => {
+    console.log(selectedFolder);
+  }, [selectedFolder]);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
-  };
-  const renderSortIcon = (field) => {
-    if (sortField !== field) return null;
-    return sortDirection === "asc" ? (
-      <ChevronUp className="ml-1 h-4 w-4" />
-    ) : (
-      <ChevronDown className="ml-1 h-4 w-4" />
-    );
   };
 
   const filteredAndSortedData = Array.isArray(data)
@@ -111,6 +101,7 @@ export default function FolderTable() {
           }
         })
     : [];
+
   const paginatedData = filteredAndSortedData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -166,7 +157,74 @@ export default function FolderTable() {
 
   return (
     <div className="space-y-4 w-full px-2 ">
-      <div className="flex flex-col sm:flex-row justify-between gap-4">
+      <SearchFilters
+        setCurrentPage={setCurrentPage}
+        sortField={sortField}
+        setSortField={setSortField}
+        sortDirection={sortDirection}
+        setSortDirection={setSortDirection}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
+      <div className="w-full ">
+        <Card className="p-0 overflow-auto">
+          <Table className="">
+            <FolderTableHeader
+              setSortDirection={setSortDirection}
+              setSortField={setSortField}
+              setCurrentPage={setCurrentPage}
+              sortField={sortField}
+              sortDirection={sortDirection}
+            />
+            <FolderTableBody
+              paginatedData={paginatedData}
+              handleEdit={handleEdit}
+              isPending={isPending}
+              isError={isError}
+            />
+          </Table>
+        </Card>
+        <FolderTableFooter
+          filteredAndSortedData={filteredAndSortedData}
+          handlePageChange={handlePageChange}
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+          totalPages={totalPages}
+          getPageNumbers={getPageNumbers}
+        />
+      </div>
+    </div>
+  );
+}
+
+// const handleResetSort = () => {
+//   setSortField("");
+//   setSortDirection("asc");
+//   setCurrentPage(1);
+// };
+
+// const renderSortIcon = (field) => {
+//   if (sortField !== field) return null;
+//   return sortDirection === "asc" ? (
+//     <ChevronUp className="ml-1 h-4 w-4" />
+//   ) : (
+//     <ChevronDown className="ml-1 h-4 w-4" />
+//   );
+// };
+
+// const handleSort = (field) => {
+//   if (sortField === field) {
+//     setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+//   } else {
+//     setSortField(field);
+//     setSortDirection("asc");
+//   }
+
+//   setCurrentPage(1);
+// };
+
+{
+  /* <div className="flex flex-col sm:flex-row justify-between gap-4">
         <div className="flex items-center gap-2">
           <div className="relative w-full sm:w-72">
             <Input
@@ -187,7 +245,7 @@ export default function FolderTable() {
             <span className="text-sm text-muted-foreground">
               Trié par:{" "}
               <span className="font-medium text-foreground capitalize">
-                {/* {sortField.replace("_dossier", "")} */}
+               
                 {sortField}
               </span>
               {sortDirection === "desc" ? " (décroissant)" : " (croissant)"}
@@ -202,30 +260,5 @@ export default function FolderTable() {
             </Button>
           </div>
         )}
-      </div>
-      <div className="w-full ">
-        <Card className="p-0 overflow-auto">
-          <Table className="">
-            <FolderTableHeader
-              renderSortIcon={renderSortIcon}
-              handleSort={handleSort}
-            />
-            <FolderTableBody
-              paginatedData={paginatedData}
-              isPending={isPending}
-              isError={isError}
-            />
-          </Table>
-        </Card>
-        <FolderTableFooter
-          filteredAndSortedData={filteredAndSortedData}
-          handlePageChange={handlePageChange}
-          currentPage={currentPage}
-          itemsPerPage={itemsPerPage}
-          totalPages={totalPages}
-          getPageNumbers={getPageNumbers}
-        />
-      </div>
-    </div>
-  );
+      </div> */
 }

@@ -36,10 +36,10 @@ const productionFileController = {
   },
   createProductionFile: async (req, res, next) => {
     try {
-      const { client, selectedProducts } = req.body;
-      const clientFolder = await productionFileService.createproductionFile(
-        client,
-        selectedProducts
+      const { data, selectedOrders } = req.body;
+      const clientFolder = await productionFileService.createProductionFile(
+        data,
+        selectedOrders
       );
       console.log("Received request body:", req.body);
       res.status(201).json({

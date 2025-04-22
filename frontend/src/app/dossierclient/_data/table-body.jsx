@@ -21,7 +21,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Edit2, MoreHorizontal, User } from "lucide-react";
 import { formatDateTime } from "@/utils/formateDate";
 
-export default function FolderTableBody({ paginatedData, isPending, isError }) {
+export default function FolderTableBody({
+  paginatedData,
+  isPending,
+  isError,
+  handleEdit,
+}) {
   return (
     <TableBody className="bg-background ">
       {isPending ? (
@@ -73,12 +78,12 @@ export default function FolderTableBody({ paginatedData, isPending, isError }) {
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuItem>
                     <User />
-                    Affiche folder
+                    Affiche dossier
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleEdit(folder)}>
                     <Edit2 />
-                    Modifier folder
+                    Modifier dossier
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -87,7 +92,7 @@ export default function FolderTableBody({ paginatedData, isPending, isError }) {
         ))
       ) : (
         <TableRow>
-          <TableCell colSpan={5} className="h-24 text-center">
+          <TableCell colSpan={6} className="h-24 text-center">
             Pas de dossier
           </TableCell>
         </TableRow>

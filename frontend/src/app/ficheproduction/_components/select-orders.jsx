@@ -36,12 +36,9 @@ export default function SelectOrders({
   const { data: orders, isLoading, refresh } = useFolderProducts(folder);
   const [selectedOrderId, setSelectedOrderId] = useState("");
 
-
-
-
-  useEffect(() => {
-    console.log(selectedOrders);
-  }, [selectedOrders]);
+  // useEffect(() => {
+  //   console.log(orders);
+  // }, [orders]);
 
   const handleAddProduct = () => {
     if (!selectedOrderId) {
@@ -54,6 +51,14 @@ export default function SelectOrders({
     );
 
     if (!orderToAdd) return;
+    const isDuplicate = selectedOrders.some(
+      (order) => order.id_detail_commande === selectedOrderId
+    );
+
+    if (isDuplicate) {
+      toast.warning(`${orderToAdd.designation_produit} est dans la liste`);
+      return;
+    }
 
     const newOrder = {
       ...orderToAdd,
@@ -61,72 +66,80 @@ export default function SelectOrders({
     };
 
     setSelectedOrders([...selectedOrders, newOrder]);
-     setSelectedOrderId("");
+    setSelectedOrderId("");
     // setSelectedOrders([]);
-    toast.success(`${orderToAdd.id_detail_commande} ajouter `);
+    toast.success(`${orderToAdd.designation_produit} ajouter `);
   };
 
   return (
-    <div>
-      <Popover open={open} onOpenChange={setOpen}>
+    <div className="flex justify-between items-end gap-2">
+      <div>
         <span>Produits du dossiers</span>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-full justify-between mt-1"
-          >
-            {orders && selectedOrderId
-              ? orders.find(
-                  (order) => order.id_detail_commande === selectedOrderId
-                )?.id_detail_commande
-              : "Rechrcher une commande..."}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-full p-0">
-          <Command>
-            <CommandInput placeholder="Recherche..." />
-            <CommandList>
-              {/* <CommandEmpty>Aucun produit trouve.</CommandEmpty> */}
-              {!orders || orders.length === 0 ? (
-                // <div className="px-4 py-2 text-sm text-muted-foreground">
-                //   0 produits.
-                // </div>
-                <CommandEmpty>Aucun produit trouve.</CommandEmpty>
-              ) : (
-                <CommandGroup>
-                  {orders.map((order) => (
-                    <CommandItem
-                      key={order.id_detail_commande}
-                      value={order.id_detail_commande}
-                      onSelect={() => {
-                        setSelectedOrderId(
-                          order.id_detail_commande === selectedOrderId
-                            ? ""
-                            : order.id_detail_commande
-                        );
-                        setOpen(false);
-                      }}
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          selectedOrderId === order.id_detail_commande
-                            ? "opacity-100"
-                            : "opacity-0"
-                        )}
-                      />
-                      <span>{order.id_detail_commande}</span>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              )}
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+        <Popover
+          open={open}
+          onOpenChange={setOpen}
+          className="flex flex-col justify-center"
+        >
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="w-full justify-between mt-1"
+            >
+              {orders && selectedOrderId
+                ? orders.find(
+                    (order) => order.id_detail_commande === selectedOrderId
+                  )?.designation_produit
+                : "Rechrcher une commande..."}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-full p-0">
+            <Command>
+              <CommandInput placeholder="Recherche..." />
+              <CommandList>
+                {/* <CommandEmpty>Aucun produit trouve.</CommandEmpty> */}
+                {!orders || orders.length === 0 ? (
+                  // <div className="px-4 py-2 text-sm text-muted-foreground">
+                  //   0 produits.
+                  // </div>
+                  <CommandEmpty>Aucun produit trouve.</CommandEmpty>
+                ) : (
+                  <CommandGroup>
+                    {orders.map((order) => (
+                      <CommandItem
+                        key={order.id_detail_commande}
+                        value={order.id_detail_commande}
+                        onSelect={() => {
+                          setSelectedOrderId(
+                            order.id_detail_commande === selectedOrderId
+                              ? ""
+                              : order.id_detail_commande
+                          );
+                          setOpen(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            selectedOrderId === order.id_detail_commande
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                        {order.designation_produit}
+                        <span>{"  X  "}</span>
+                        {order.quantite}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                )}
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      </div>
       <Button
         type="button"
         onClick={handleAddProduct}

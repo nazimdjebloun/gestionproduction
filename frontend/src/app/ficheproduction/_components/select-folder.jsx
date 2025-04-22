@@ -13,21 +13,23 @@ import { Input } from "@/components/ui/input";
 
 
 
-function FolderItem({ folderId, clientId}) {
+function FolderItem({ folderId, clientId, folder }) {
   // Now we can safely use the hook at the top level of this component
-  const { data: client, clientIsLoading } = useClientById(clientId);
+  // const { data: client, clientIsLoading } = useClientById(clientId);
 
   return (
     <SelectItem key={folderId} value={folderId}>
-      {clientIsLoading ? "Loading..." : client?.nom_client || folderId}
+      {/* {clientIsLoading
+        ? "Loading..."
+        : `${folder.num_bc} / ${folder?.nom_client ?? ""} ` || folderId} */}
+      {`${folder.num_bc} / ${folder?.nom_client ?? ""} ` || folderId}
     </SelectItem>
   );
 }
 
-
-
 export default function SelectFolder({
-  setShop,setFolder,
+  setShop,
+  setFolder,
   state,
   folder,
   setDepartment,
@@ -36,8 +38,6 @@ export default function SelectFolder({
   setSelectedOrders,
 }) {
   const { data: folders, isLoading, refresh } = useFolders();
-
-  useEffect(() => {}, []);
 
   const handleFolderChange = (folderId) => {
     setFolder(folderId);
@@ -52,6 +52,7 @@ export default function SelectFolder({
       setShop("");
     }
   };
+
   return (
     <div>
       <p className="p-1">les Dossiers clients</p>
@@ -59,7 +60,7 @@ export default function SelectFolder({
         // defaultValue={folders.length > 0 ? folders[0].id : ""}
         id="folder"
         name="folder"
-        value={folder}
+        value={folder ? folder : ""}
         onValueChange={handleFolderChange}
         className="w-[50%]"
       >
@@ -74,8 +75,10 @@ export default function SelectFolder({
               folders.map((folder) => (
                 <FolderItem
                   key={folder.id_dossier}
+                  folder={folder}
                   folderId={folder.id_dossier}
                   clientId={folder.id_client}
+                  num_bc={folder.num_bc}
                 />
               ))
             ) : (

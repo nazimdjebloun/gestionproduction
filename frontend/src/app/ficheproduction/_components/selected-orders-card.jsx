@@ -4,12 +4,16 @@ import { Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
-export default function SelectedOrdersCard({ orders, setSelectedOrders }) {
+export default function SelectedOrdersCard({
+  state,
+  orders,
+  setSelectedOrders,
+}) {
   const handleRemoveProduct = (id_detail_commande) => {
     setSelectedOrders(
       orders.filter((p) => p.id_detail_commande !== id_detail_commande)
     );
-    toast("Product removed");
+    toast("Commande supprimer");
   };
 
   return (
@@ -39,7 +43,7 @@ export default function SelectedOrdersCard({ orders, setSelectedOrders }) {
                   <div className="">
                     <div className="font-medium gap-3 flex">
                       <span className="font-bold">{order.quantite}</span>
-                      <p>{order.id_produit}</p>
+                      <p>{order.designation_produit}</p>
                     </div>
                     <div className="">
                       {order.details && (
@@ -78,6 +82,9 @@ export default function SelectedOrdersCard({ orders, setSelectedOrders }) {
           </div>
         )}
       </div>
+      {state?.errors?.selectedOrders && (
+        <p className="text-sm text-red-500">{state.errors.selectedOrders[0]}</p>
+      )}
     </div>
   );
 }

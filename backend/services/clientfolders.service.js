@@ -11,11 +11,12 @@ import pool from "../config/db.js"; // PostgreSQL pool
 const clientFolderService = {
   // Get all clients
   getAllClientFolders: async () => {
-        const query = `
-      SELECT 
-        d.id_dossier,
-        d.num_bc,
-        d.date_creation,
+    //     d.id_dossier,
+    // d.num_bc,
+    // d.date_creation,
+    const query = `
+      SELECT
+        d.*,
         c.nom_client ,
         dep.nom_departement
       FROM dossier d
@@ -23,8 +24,8 @@ const clientFolderService = {
       JOIN departement dep ON d.id_departement = dep.id_departement
     `;
 
-        // const result = await pool.query("SELECT * FROM dossier");
-        const result = await pool.query(query);
+    // const result = await pool.query("SELECT * FROM dossier");
+    const result = await pool.query(query);
     return result.rows;
   },
 

@@ -28,16 +28,17 @@ export default async function CreateProductionFileAction(prevState, formData) {
   }
 
   try {
+    // console.log(data);
     const validatedData = ProductionFileformSchema.parse(data);
-    console.log(validatedData);
+
     const validatedOrders = ProductionFileOrderformSchema.parse({
       selectedOrders,
     });
-    console.log(validatedOrders);
-    // const response = await axiosInstance.post("/api/clientfolders", {
-    //   data: validatedData,
-    //   selectedOrders: validatedProducts.selectedOrders,
-    // });
+    // console.log(validatedOrders);
+    const response = await axiosInstance.post("/api/productionfiles", {
+      data: validatedData,
+      selectedOrders: validatedOrders.selectedOrders,
+    });
 
     return {
       success: true,
@@ -54,6 +55,7 @@ export default async function CreateProductionFileAction(prevState, formData) {
         inputs: data,
       };
     }
+    console.error("Error ", error);
     return {
       success: false,
       message: "Une erreur inattendue s'est produite",
