@@ -44,6 +44,13 @@ export default function FileTable() {
     }, 10); // Tiny delay gives DropdownMenu time to close
   };
 
+
+  const handleView = (file) => {
+    // setTimeout(() => { }, 10);
+    setSelectedFile(file);
+    console.log(file);
+  };
+
   useEffect(() => {
     console.log(data);
   }, [data]);
@@ -172,6 +179,7 @@ export default function FileTable() {
             <FileTableBody
               paginatedData={paginatedData}
               handleEdit={handleEdit}
+              handleView={handleView}
               isPending={isPending}
               isError={isError}
             />

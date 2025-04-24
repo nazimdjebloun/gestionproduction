@@ -20,12 +20,14 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Edit2, MoreHorizontal, User } from "lucide-react";
 import { formatDateTime } from "@/utils/formateDate";
+import Link from "next/link";
 
 export default function FileTableBody({
   paginatedData,
   isPending,
   isError,
   handleEdit,
+  handleView,
 }) {
   return (
     <TableBody className="bg-background ">
@@ -73,7 +75,9 @@ export default function FileTableBody({
             <TableCell>{formatDateTime(file.date_creation)}</TableCell>
             <TableCell>{file.nom_departement}</TableCell>
             <TableCell>{file.nom_atelier}</TableCell>
-            <TableCell className="max-w-[300px] truncate">en cours</TableCell>
+            <TableCell className="max-w-[300px] truncate">
+              {file.etat_fiche}
+            </TableCell>
             <TableCell>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -86,13 +90,21 @@ export default function FileTableBody({
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuItem>
                     <User />
-                    Affiche fichier
+                    Affiche fiche
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => handleEdit(file)}>
                     <Edit2 />
-                    Modifier fichier
+                    Modifier fiche
                   </DropdownMenuItem>
+                  <Link
+                    href={`./ficheproduction/remplissagefiche/${file.id_fiche_production}`}
+                  >
+                    <DropdownMenuItem onClick={() => handleView(file)}>
+                      <User />
+                      Mise a jour fiche
+                    </DropdownMenuItem>
+                  </Link>
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>
@@ -100,7 +112,7 @@ export default function FileTableBody({
         ))
       ) : (
         <TableRow>
-          <TableCell colSpan={6} className="h-24 text-center">
+          <TableCell colSpan={8} className="h-24 text-center">
             Pas de fichier
           </TableCell>
         </TableRow>

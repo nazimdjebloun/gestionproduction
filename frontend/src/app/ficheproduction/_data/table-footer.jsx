@@ -27,7 +27,7 @@ export default function FileTableFooter({
                 currentPage * itemsPerPage,
                 filteredAndSortedData.length
               )}{" "}
-              sur {filteredAndSortedData.length} dossier
+              sur {filteredAndSortedData.length} fichier
             </div>
 
             <Pagination className="w-full flex justify-center">

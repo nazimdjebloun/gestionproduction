@@ -41,16 +41,19 @@ export default function SelectFolder({
 
   const handleFolderChange = (folderId) => {
     setFolder(folderId);
-    // setShop("");
-    // Find the selected folder
-    const selectedFolder = folders.find((f) => f.id_dossier === folderId);
-    // If found and it has a department ID, update the department
-    if (selectedFolder && selectedFolder.id_departement) {
-      setDepartment(selectedFolder.id_departement);
       setSelectedOrderId("");
       setSelectedOrders([]);
       setShop("");
-    }
+
+      // Find the selected folder
+      const selectedFolder = folders.find((f) => f.id_dossier === folderId);
+      // If found and it has a department ID, update the department
+      if (selectedFolder && selectedFolder.id_departement) {
+        setDepartment(selectedFolder.id_departement);
+        // setSelectedOrderId("");
+        // setSelectedOrders([]);
+        // setShop("");
+      }
   };
 
   return (

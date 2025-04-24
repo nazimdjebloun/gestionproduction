@@ -39,27 +39,70 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import CreateClientFolderAction from "@/actions/create-clientFolder";
-import { useClients } from "@/hooks/fetsh-data";
+import { useEmployes, useMaterials } from "@/hooks/fetsh-data";
 
 // export default function SelectClient({ value, setValue }) {
-export default function SelectClient({ value, setValue, state }) {
+export default function SelectMaterial({ value, setValue, state }) {
   const [open, setOpen] = useState(false);
-  const { data: clients, isLoading, refresh } = useClients();
-  const selectedClient = clients.find((client) => client.id_client === value);
+  const { data: materials, isLoading, refresh } = useMaterials();
+
+    
+  const handleAddMaterial = () => {
+    if (!selectedMaterials) {
+      toast.error("No selected Materials ");
+      return;
+    }
+
+    const materialToAdd = materials.find(
+      (p) => p.id_produit === selectedProductId
+    );
+
+    if (!productToAdd) return;
+
+    // const uniqueId = `${selectedProductId}-${Date.now()}`;
+    const newProduct = {
+      ...productToAdd,
+      id_produit: productToAdd.id_produit,
+      quantity,
+      ...(productDetails ? { productDetails } : { productDetails: null }),
+      ...(hasSurface ? { width, height } : { width: null, height: null }),
+    };
+
+    setSelectedProducts([...selectedProducts, newProduct]);
+    setSelectedProductId("");
+    setQuantity(1);
+    setProductDetails("");
+    if (hasSurface) {
+      setWidth(0);
+      setHeight(0);
+      setHasSurface(false);
+    }
+
+    toast.success(`${productToAdd.designation_produit} ajouter `);
+  };
+
+    
+  useEffect(() => {
+    console.log("materials : ", materials);
+  }, [materials]);
+
+  const selectedMaterial = materials.find(
+    (material) => material.id_matiare === value
+  );
   return (
     <div>
       <Popover open={open} onOpenChange={setOpen} className="w-[100%]">
         <Input
-          id="client"
-          name="client"
-          placeholder="client"
+          id="material"
+          name="material"
+          placeholder="material"
           value={value}
           readOnly
           //   defaultValue={state?.inputs?.name}
           type="text"
           hidden
         />
-        <p className="p-1">Clients</p>
+        <p className="p-1">Matiares premieres</p>
         <PopoverTrigger asChild className="w-[100%]">
           <Button
             variant="outline"
@@ -67,11 +110,11 @@ export default function SelectClient({ value, setValue, state }) {
             aria-expanded={open}
             className="w-[100%] justify-between"
           >
-            {selectedClient
-              ? selectedClient.nom_client
+            {selectedMaterial
+              ? `${selectedMaterial.designation_matiere}`
               : isLoading
               ? "Chargement..."
-              : "Sélectionnez un client..."}
+              : "Sélectionnez la matiere premiere..."}
             <ChevronsUpDown className="opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -86,28 +129,28 @@ export default function SelectClient({ value, setValue, state }) {
               {isLoading ? (
                 <CommandGroup>
                   <CommandItem disabled>
-                    Chargement des clients...
+                    Chargement des matiares ...
                     <Loader2 className="animate-spin ml-2 h-4 w-4" />
                   </CommandItem>
                 </CommandGroup>
-              ) : clients.length > 0 ? (
+              ) : materials.length > 0 ? (
                 <>
-                  <CommandEmpty>Client introuvable.</CommandEmpty>
+                  <CommandEmpty>matiare introuvable.</CommandEmpty>
                   <CommandGroup>
-                    {clients.map((client) => (
+                    {materials.map((material) => (
                       <CommandItem
-                        key={client.id_client}
-                        value={client.nom_client}
+                        key={material.id_matiare}
+                        value={material.id_matiare}
                         onSelect={() => {
-                          setValue(client.id_client);
+                          setValue(material.id_matiare);
                           setOpen(false);
                         }}
                       >
-                        {client.nom_client}
+                        {`${material.designation_matiere}`}
                         <Check
                           className={cn(
                             "ml-auto h-4 w-4",
-                            value === client.id_client
+                            value === material.id_matiare
                               ? "opacity-100"
                               : "opacity-0"
                           )}
@@ -118,68 +161,16 @@ export default function SelectClient({ value, setValue, state }) {
                 </>
               ) : (
                 <CommandGroup>
-                  <CommandItem disabled>Aucun client trouvé</CommandItem>
+                  <CommandItem disabled>Aucune matiare trouvé</CommandItem>
                 </CommandGroup>
               )}
             </CommandList>
           </Command>
         </PopoverContent>
       </Popover>
-      {state?.errors?.client && (
-        <p className="text-sm text-red-500 px-2">{state.errors.client[0]}</p>
+      {state?.errors?.materials && (
+        <p className="text-sm text-red-500 px-2">{state.errors.materials[0]}</p>
       )}
     </div>
   );
-}
-
-{
-  /* <Command className="w-full">
-            {isLoading ? (
-              <CommandGroup>
-                <CommandItem>
-                  Chargement des clients <Loader2 className="animate-spin" />
-                </CommandItem>
-              </CommandGroup>
-            ) : clients.length > 0 ? (
-              <>
-                <CommandInput
-                  placeholder="Recherche un client..."
-                  className="h-9"
-                />
-                <CommandList>
-                  <CommandEmpty>Client introuvable</CommandEmpty>
-                  <CommandGroup>
-                    {clients.map((client) => (
-                      <CommandItem
-                        key={client.id_client}
-                        value={client.nom_client}
-                        // onSelect={(currentValue) => {
-                        //   setValue(currentValue === value ? "" : currentValue);
-                        //   setOpen(false);
-                        // }}
-                        onSelect={() => {
-                          setValue(client.id_client); // update by ID
-                          setOpen(false);
-                        }}
-                      >
-                        {client.nom_client}
-                        <Check
-                          className={cn(
-                            "ml-auto",
-                            value === client.id_client
-                              ? "opacity-100"
-                              : "opacity-0"
-                          )}
-                        />
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </>
-            ) : (
-              <CommandGroup>
-                <CommandItem>Pas de clients</CommandItem>
-              </CommandGroup>
-            )}
-          </Command> */
 }

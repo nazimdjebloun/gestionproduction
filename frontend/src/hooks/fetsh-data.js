@@ -73,6 +73,38 @@ export function useFetchDataById(
 }
 
 // Specific hooks for each data type
+export function useEmployes() {
+  return useFetchData("/api/employes", "employes", (employes) =>
+    employes.map((employe) => ({
+      ...employe,
+    }))
+  );
+}
+
+export function useEmployesById(id) {
+  return useFetchDataById("/api/employes", id, ["employe", id], (employe) => ({
+    employe,
+  }));
+}
+
+export function useMaterials() {
+  return useFetchData("/api/materials", "materials", (materials) =>
+    materials.map((material) => ({
+      ...material,
+    }))
+  );
+}
+export function useMaterialById(id) {
+  return useFetchDataById(
+    "/api/materials",
+    id,
+    ["material", id],
+    (material) => ({
+      material,
+    })
+  );
+}
+
 export function useClients() {
   return useFetchData("/api/clients", "clients", (clients) =>
     clients.map((client) => ({
@@ -194,6 +226,7 @@ export function useFolders() {
     clientfolders.map((clientfolder) => ({
       id_dossier: clientfolder.id_dossier,
       id_client: clientfolder.id_client,
+      etat_dossier: clientfolder.etat_dossier,
       nom_client: clientfolder.nom_client,
       id_departement: clientfolder.id_departement,
       nom_departement: clientfolder.nom_departement,
@@ -240,6 +273,7 @@ export function useFiles() {
     (productionfiles) =>
       productionfiles.map((productionfile) => ({
         id_fiche_production: productionfile.id_fiche_production,
+        etat_fiche: productionfile.etat_fiche,
         num_bc: productionfile.num_bc,
         date_creation_dossier: productionfile.date_creation_dossier,
         date_creation: productionfile.created_at,
@@ -254,12 +288,16 @@ export function useFiles() {
 
 export function useFileById(fileId) {
   return useFetchDataById(
-    "/api/productionfile",
+    "/api/productionfiles",
     fileId,
     ["file", fileId],
     (file) => ({
       id_fiche_production: file.id_fiche_production,
       id_atelier: file.id_atelier,
+      num_bc: file.num_bc,
+      nom_client: file.nom_client,
+      nom_atelier: file.nom_atelier,
+      nom_departement: file.nom_departement,
       id_dossier: file.id_dossier,
     })
   );

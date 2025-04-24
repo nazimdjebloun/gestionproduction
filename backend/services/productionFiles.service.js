@@ -33,10 +33,21 @@ JOIN departement dep ON d.id_departement = dep.id_departement;
 
    // Get single client by ID
    getProductionFileById: async (id) => {
-     const result = await pool.query(
-       "SELECT * FROM fiche_production WHERE id_fiche_production = $1",
-       [id]
-     );
+     const query = `SELECT 
+  fp.*,
+  c.nom_client,
+  a.nom_atelier,
+  dep.nom_departement,
+  d.num_bc,
+  d.date_creation AS date_creation_dossier
+FROM fiche_production fp
+JOIN dossier d ON fp.id_dossier = d.id_dossier
+JOIN client c ON d.id_client = c.id_client
+JOIN atelier a ON fp.id_atelier = a.id_atelier
+JOIN departement dep ON d.id_departement = dep.id_departement
+WHERE fp.id_fiche_production = $1;
+`;
+     const result = await pool.query(query, [id]);
      return result.rows[0];
    },
 

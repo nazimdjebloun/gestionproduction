@@ -20,7 +20,7 @@ const productionFileController = {
       const productionFile = await productionFileService.getProductionFileById(
         req.params.id
       );
-      if (!clientFolder) {
+      if (!productionFile) {
         return res.status(404).json({
           success: false,
           message: "dossier client not found",
@@ -28,7 +28,7 @@ const productionFileController = {
       }
       res.status(200).json({
         success: true,
-        data: clientFolder,
+        data: productionFile,
       });
     } catch (error) {
       next(error);

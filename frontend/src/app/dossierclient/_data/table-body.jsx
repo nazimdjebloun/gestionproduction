@@ -65,7 +65,9 @@ export default function FolderTableBody({
             <TableCell>{folder.nom_client}</TableCell>
             <TableCell>{formatDateTime(folder.date_creation)}</TableCell>
             <TableCell>{folder.nom_departement}</TableCell>
-            <TableCell className="max-w-[300px] truncate">en cours</TableCell>
+            <TableCell className="max-w-[300px] truncate">
+              {folder.etat_dossier}
+            </TableCell>
             <TableCell>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

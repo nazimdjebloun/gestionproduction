@@ -60,11 +60,12 @@ CREATE TABLE IF NOT EXISTS public.detail_commande
 CREATE TABLE IF NOT EXISTS public.dossier
 (
     id_dossier uuid NOT NULL DEFAULT uuid_generate_v4(),
-    num_bc text not null 
     date_creation timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     id_client uuid NOT NULL,
     id_departement uuid NOT NULL,
     created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    num_bc text COLLATE pg_catalog."default" NOT NULL,
+    etat_dossier text COLLATE pg_catalog."default" DEFAULT 'entraitement'::text,
     CONSTRAINT dossier_pkey PRIMARY KEY (id_dossier)
 );
 
@@ -88,6 +89,7 @@ CREATE TABLE IF NOT EXISTS public.fiche_production
     id_dossier uuid NOT NULL,
     created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    etat_fiche text COLLATE pg_catalog."default" DEFAULT 'encours'::text,
     CONSTRAINT fiche_production_pkey PRIMARY KEY (id_fiche_production)
 );
 
@@ -262,81 +264,5 @@ ALTER TABLE IF EXISTS public.travaille
     REFERENCES public.fiche_production (id_fiche_production) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
-
-
-
-
-
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = CURRENT_TIMESTAMP;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-
-
-CREATE TRIGGER trg_set_updated_at_client
-BEFORE UPDATE ON client
-FOR EACH ROW
-EXECUTE PROCEDURE update_updated_at_column();
-
-CREATE TRIGGER trg_set_updated_at_atelier
-BEFORE UPDATE ON atelier
-FOR EACH ROW
-EXECUTE PROCEDURE update_updated_at_column();
-
-CREATE TRIGGER trg_set_updated_at_detail_commande
-BEFORE UPDATE ON detail_commande
-FOR EACH ROW
-EXECUTE PROCEDURE update_updated_at_column();
-
-CREATE TRIGGER trg_set_updated_at_commande_fiche
-BEFORE UPDATE ON commande_fiche
-FOR EACH ROW
-EXECUTE PROCEDURE update_updated_at_column();
-
-CREATE TRIGGER trg_set_updated_at_matiere_utilise
-BEFORE UPDATE ON matiere_utilise
-FOR EACH ROW
-EXECUTE PROCEDURE update_updated_at_column();
-
-CREATE TRIGGER trg_set_updated_at_travaille
-BEFORE UPDATE ON travaille
-FOR EACH ROW
-EXECUTE PROCEDURE update_updated_at_column();
-
-CREATE TRIGGER trg_set_updated_at_departement
-BEFORE UPDATE ON departement
-FOR EACH ROW
-EXECUTE PROCEDURE update_updated_at_column();
-
-CREATE TRIGGER trg_set_updated_at_employe
-BEFORE UPDATE ON employe
-FOR EACH ROW
-EXECUTE PROCEDURE update_updated_at_column();
-
-CREATE TRIGGER trg_set_updated_at_fiche_production
-BEFORE UPDATE ON fiche_production
-FOR EACH ROW
-EXECUTE PROCEDURE update_updated_at_column();
-
-CREATE TRIGGER trg_set_updated_at_matiere_premiere
-BEFORE UPDATE ON matiere_premiere
-FOR EACH ROW
-EXECUTE PROCEDURE update_updated_at_column();
-
-CREATE TRIGGER trg_set_updated_at_produit
-BEFORE UPDATE ON produit
-FOR EACH ROW
-EXECUTE PROCEDURE update_updated_at_column();
-
-CREATE TRIGGER trg_set_updated_at_type_produit
-BEFORE UPDATE ON type_produit
-FOR EACH ROW
-EXECUTE PROCEDURE update_updated_at_column();
-
-
 
 END;
