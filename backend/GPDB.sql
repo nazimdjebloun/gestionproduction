@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS public.fiche_production
     created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     etat_fiche text COLLATE pg_catalog."default" DEFAULT 'encours'::text,
+    total_heurs character varying(50) COLLATE pg_catalog."default",
     CONSTRAINT fiche_production_pkey PRIMARY KEY (id_fiche_production)
 );
 
@@ -107,7 +108,7 @@ CREATE TABLE IF NOT EXISTS public.matiere_utilise
 (
     id_fiche_production uuid NOT NULL,
     id_matiere uuid NOT NULL,
-    quantite text COLLATE pg_catalog."default",
+    quantite character varying(50) COLLATE pg_catalog."default",
     prix_unite text COLLATE pg_catalog."default",
     created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -128,11 +129,11 @@ CREATE TABLE IF NOT EXISTS public.produit
 CREATE TABLE IF NOT EXISTS public.pv
 (
     id_pv uuid NOT NULL DEFAULT uuid_generate_v4(),
-    motif text COLLATE pg_catalog."default" NOT NULL,
     date_creation timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     reserve text COLLATE pg_catalog."default",
     id_dossier uuid NOT NULL,
     created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    etat_pv text COLLATE pg_catalog."default" NOT NULL DEFAULT 'entraitement'::text,
     CONSTRAINT pv_pkey PRIMARY KEY (id_pv)
 );
 
@@ -172,7 +173,7 @@ ALTER TABLE IF EXISTS public.commande_fiche
     ADD CONSTRAINT commande_fiche_id_fiche_production_fkey FOREIGN KEY (id_fiche_production)
     REFERENCES public.fiche_production (id_fiche_production) MATCH SIMPLE
     ON UPDATE NO ACTION
-    ON DELETE NO ACTION;
+    ON DELETE CASCADE;
 
 
 ALTER TABLE IF EXISTS public.detail_commande
@@ -263,6 +264,6 @@ ALTER TABLE IF EXISTS public.travaille
     ADD CONSTRAINT travaille_id_fiche_production_fkey FOREIGN KEY (id_fiche_production)
     REFERENCES public.fiche_production (id_fiche_production) MATCH SIMPLE
     ON UPDATE NO ACTION
-    ON DELETE NO ACTION;
+    ON DELETE CASCADE;
 
 END;

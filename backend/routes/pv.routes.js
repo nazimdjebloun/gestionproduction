@@ -6,8 +6,18 @@ const router = express.Router();
 // GET all PVs
 router.get("/", pvController.getAllPVs);
 
+
+// GET PVs in 'entraitement' status
+router.get("/valide", pvController.getPVsValidated);
+
+// GET all PVs
+router.get("/:id", pvController.getPVById);
+
+
 // GET PVs in 'entraitement' status
 router.get("/entraitement", pvController.getPVsEnTraitement);
+
+
 
 // GET PVs by dossier ID
 router.get("/dossier/:id_dossier", pvController.getPVsByDossierId);

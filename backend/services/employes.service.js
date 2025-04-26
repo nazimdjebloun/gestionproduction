@@ -16,6 +16,19 @@ const employeService = {
     );
     return result.rows[0];
   },
+  getEmployeByFileId: async (id) => {
+    const query = `
+    SELECT 
+      t.*,
+      e.nom_employe,
+      e.prenom_employe
+    FROM travaille t
+    JOIN employe e ON t.id_employe = e.id_employe
+    WHERE t.id_fiche_production = $1
+  `;
+    const result = await pool.query(query, [id]);
+    return result.rows;
+  },
 
   // Create new employee
   createEmploye: async (employeData) => {

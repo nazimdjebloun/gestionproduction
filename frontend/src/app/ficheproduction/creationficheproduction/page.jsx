@@ -38,9 +38,14 @@ export default function FicheProduction() {
       setDepartment("");
       setShop("");
       toast.success(state?.message);
-      queryClient.refetchQueries({
-        queryKey: ["productionfiles"],
-        type: "active",
+      // queryClient.refetchQueries({
+      //   queryKey: "productionfiles",
+      //   type: "active",
+      // });
+
+      queryClient.invalidateQueries({
+        queryKey: ["productionfiles"], // Must match exactly
+        refetchType: "active", // Optional
       });
     }
     if (state?.success === false) {

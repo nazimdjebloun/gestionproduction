@@ -18,20 +18,38 @@ import Materials from "../_componenets/materials";
 import Employes from "../_componenets/employes";
 import ProductionFileFillngAction from "@/actions/ficheproduction/productionfile-fillng";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function FileUpdate({}) {
+  const queryClient = useQueryClient();
   const [state, formAction, isLoading] = useActionState(
     ProductionFileFillngAction,
     null
   );
+  useEffect(() => {
+    if (state?.success === true) {
+      queryClient.invalidateQueries({
+        queryKey: ["productionfiles"], // Must match exactly
+        refetchType: "active", // Optional
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["employesByproductionfile"], // Must match exactly
+        refetchType: "active", // Optional
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["materialByproductionfile"], // Must match exactly
+        refetchType: "active", // Optional
+      });
+    }
+  }, [state]);
 
   const params = useParams();
   const fileId = params.id;
   const { data: data, isPending, isError, refresh } = useFileById(fileId);
 
-  useEffect(() => {
-    console.log("selected file : ", data);
-  }, [data]);
+  // useEffect(() => {
+  //   console.log("selected file : ", data);
+  // }, [data]);
 
   return (
     <div className="flex justify-center items-center p-5 w-full">

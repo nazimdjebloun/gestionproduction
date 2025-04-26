@@ -72,7 +72,6 @@ export function useFetchDataById(
   };
 }
 
-
 export function usePVs() {
   return useFetchData("/api/pvs", "pvs", (pvs) =>
     pvs.map((pv) => ({
@@ -82,8 +81,17 @@ export function usePVs() {
   );
 }
 
+export function useValidatedPVs() {
+  return useFetchData("/api/pvs/valide", ["pvsvalider"], (pvs) =>
+    pvs.map((pv) => ({
+      ...pv,
+      // Add any transformations here if needed
+    }))
+  );
+}
+
 export function usePVById(id) {
-  return useFetchDataById("/api/pvs", id, ["pvById", id], (pv) => ({
+  return useFetchDataById("/api/pvs", id, ["pvById"], (pv) => ({
     ...pv,
     // Add any transformations here if needed
   }));
@@ -123,8 +131,7 @@ export function usePVsByDossierIdWithReserve(id_dossier) {
 }
 export function usePVsEnTraitementByDossierId(id_dossier) {
   return useFetchData(
-    "/api/pvs/dossier/entraitement",
-    id_dossier,
+    `/api/pvs/dossier/entraitement/${id_dossier}`,
     ["pvsEnTraitementByDossier", id_dossier],
     (pvs) =>
       pvs.map((pv) => ({
@@ -155,22 +162,28 @@ export function useEmployesById(id) {
 
 export function useEmployesByFileId(id) {
   return useFetchDataById(
-    "/api/employes/productionfile",
+    `/api/employes/productionfile`,
     id,
-    ["employe", id],
-    (employe) => ({
-      employe,
-    })
+    ["employesByproductionfile"],
+    (employes) =>
+      employes?.map((employe) => ({
+        ...employe,
+      })) || []
   );
 }
 
-export function useMaterials() {
-  return useFetchData("/api/materials", "materials", (materials) =>
-    materials.map((material) => ({
-      ...material,
-    }))
+export function useMaterialByFileId(id) {
+  return useFetchDataById(
+    "/api/materials/productionfile",
+    id,
+    ["materialByproductionfile"],
+    (materials) =>
+      materials?.map((material) => ({
+        ...material,
+      })) || []
   );
 }
+
 export function useMaterialById(id) {
   return useFetchDataById(
     "/api/materials",
@@ -179,6 +192,14 @@ export function useMaterialById(id) {
     (material) => ({
       material,
     })
+  );
+}
+
+export function useMaterials() {
+  return useFetchData("/api/materials", ["materials"], (materials) =>
+    materials.map((material) => ({
+      ...material,
+    }))
   );
 }
 
@@ -192,18 +213,6 @@ export function useMaterialById(id) {
 //     }))
 //   );
 // }
-
-export function useMaterialByFileId(id) {
-  return useFetchDataById(
-    "/api/materials/productionfile",
-    id,
-    ["materialByFile", id],
-    (materials) =>
-      materials?.map((material) => ({
-        ...material,
-      })) || []
-  );
-}
 
 export function useClients() {
   return useFetchData("/api/clients", "clients", (clients) =>
@@ -322,16 +331,19 @@ export function useProductById(productId) {
 }
 
 export function useFolders() {
-  return useFetchData("/api/clientfolders", "clientfolders", (clientfolders) =>
-    clientfolders.map((clientfolder) => ({
-      id_dossier: clientfolder.id_dossier,
-      id_client: clientfolder.id_client,
-      etat_dossier: clientfolder.etat_dossier,
-      nom_client: clientfolder.nom_client,
-      id_departement: clientfolder.id_departement,
-      nom_departement: clientfolder.nom_departement,
-      num_bc: clientfolder.num_bc,
-    }))
+  return useFetchData(
+    "/api/clientfolders",
+    ["clientfolders"],
+    (clientfolders) =>
+      clientfolders.map((clientfolder) => ({
+        id_dossier: clientfolder.id_dossier,
+        id_client: clientfolder.id_client,
+        etat_dossier: clientfolder.etat_dossier,
+        nom_client: clientfolder.nom_client,
+        id_departement: clientfolder.id_departement,
+        nom_departement: clientfolder.nom_departement,
+        num_bc: clientfolder.num_bc,
+      }))
   );
 }
 
@@ -369,7 +381,7 @@ export function useFolderProducts(folderId) {
 export function useFiles() {
   return useFetchData(
     "/api/productionfiles",
-    "productionfiles",
+    "productionfiles", // Changed to array
     (productionfiles) =>
       productionfiles.map((productionfile) => ({
         id_fiche_production: productionfile.id_fiche_production,

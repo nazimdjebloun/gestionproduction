@@ -20,14 +20,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Edit2, MoreHorizontal, FileText } from "lucide-react";
 import { formatDateTime } from "@/utils/formateDate";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
-export default function PvTableBody({
-  paginatedData,
-  isPending,
-  isError,
-  handleRejectPv,
-  handleValidatPv,
-}) {
+export default function PvTableBody({ paginatedData, isPending, isError, handleSelectedPv }) {
   // const [selectedPvId, setSelectedPvId] = React.useState(null);
   // const [isPvModalOpen, setIsPvModalOpen] = React.useState(false);
 
@@ -93,15 +88,19 @@ export default function PvTableBody({
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem onClick={() => handleValidatPv(pv.id_pv)}>
-                      <FileText className="" />
-                      Valider
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => handleRejectPv(pv.id_pv)}>
+                    <Link href={`./pvvalider/viewpvvalide/${pv.id_pv}`}>
+                      <DropdownMenuItem
+                        // onClick={() => handleSelectedPv(pv.id_pv)}
+                      >
+                        <FileText className="" />
+                        Imprimer PV
+                      </DropdownMenuItem>
+                    </Link>
+                    {/* <DropdownMenuSeparator /> */}
+                    {/* <DropdownMenuItem onClick={() => handleRejectPv(pv.id_pv)}>
                       <Edit2 className="" />
                       Rejeter
-                    </DropdownMenuItem>
+                    </DropdownMenuItem> */}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>

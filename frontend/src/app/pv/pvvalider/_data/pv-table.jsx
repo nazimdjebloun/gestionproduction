@@ -25,12 +25,11 @@ import PvTableHeader from "./table-head";
 import PvTableBody from "./table-body";
 import { formatDateTime } from "@/utils/formateDate";
 import SearchFilters from "./search-filters";
-import { usePVs } from "@/hooks/fetsh-data";
-import ValidatePv from "../_componenets/validate_pv";
-import RejectPv from "../_componenets/reject-pv";
+import { useValidatedPVs } from "@/hooks/fetsh-data";
 
 
-export default function PvTable({}) {
+
+export default function PvValideTable({  }) {
   const [searchQuery, setSearchQuery] = useState("");
   // const [filteredAndSortedData, setFilteredAndSortedData] = useState("");
 
@@ -40,31 +39,59 @@ export default function PvTable({}) {
   const [selectedPv, setSelectedPv] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
-  const [rejectDialogOpen, seRejectDialogOpen] = useState(false);
-  const [validateDialogOpen, setValidateDialogOpen] = useState(false);
+  // const [rejectDialogOpen, seRejectDialogOpen] = useState(false);
+  // const [validateDialogOpen, setValidateDialogOpen] = useState(false);
+  const { data: data, isPending, isError, refresh } = useValidatedPVs();
+  const [selectedPvData, setSelectedPvData] = React.useState(null);
 
-  const { data: data, isPending, isError, refresh } = usePVs();
+  // useEffect(() => {
+  //   console.log(data);
+  // }, [data]);
 
-  const handleRejectPv = (pv) => {
+  // const handleSelectedPv = (Pv) => {
+  //   setSelectedPv(Pv);
+  //   console.log(Pv);
+  // };
+
+  // const handleSelectedPv = async (pvId) => {
+  //   try {
+  //     const response = await fetch(`/api/pvs/${pvId}`); // your API route to get full PV
+  //     // const data = await response.json();
+  //     setSelectedPvData(response);
+  //     console.log("DAATA", response);
+
+  //     // Wait a bit for the component to render then print
+  //     // setTimeout(() => {
+  //     //   window.print();
+  //     // }, 500);
+  //   } catch (error) {
+  //     console.error("Failed to fetch PV details:", error);
+  //   }
+  // };
+
+const handleSelectedPv = async (pvId) => {
+  try {
+    // Make the request with axios
+    const response = await axiosInstance(`/api/pvs/${pvId}`);
+
+    // The data is available directly in response.data, no need to call .json()
+    const data = response.data; // Axios automatically parses the JSON response
+    setSelectedPvData(data);
+
+    // Optional: wait a bit and then print
     setTimeout(() => {
-      setSelectedPv(pv);
-      seRejectDialogOpen(true);
-    }, 10);
-  };
-  const handleValidatPv = (pv) => {
-    setTimeout(() => {
-      setSelectedPv(pv);
-      setValidateDialogOpen(true);
-    }, 10);
-  };
-  const handleClosePvValidatDialog = () => {
-    setValidateDialogOpen(false);
-    // setSelectedFolder(null);
-  };
-  const handleClosePvRejectDialog = () => {
-    seRejectDialogOpen(false);
-    // setSelectedFolder(null);
-  };
+      window.print();
+    }, 500);
+  } catch (error) {
+    // Log the error, check if the error response contains details
+    console.error(
+      "Failed to fetch PV details:",
+      error.response ? error.response.data.message : error.message
+    );
+  }
+};
+
+
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -189,25 +216,12 @@ export default function PvTable({}) {
             />
             <PvTableBody
               paginatedData={paginatedData}
-              handleRejectPv={handleRejectPv}
-              handleValidatPv={handleValidatPv}
+              handleSelectedPv={handleSelectedPv}
               isPending={isPending}
               isError={isError}
             />
           </Table>
         </Card>
-
-        <ValidatePv
-          selectedPv={selectedPv}
-          validateDialogOpen={validateDialogOpen}
-          handleClosePvValidatDialog={handleClosePvValidatDialog}
-        />
-
-        <RejectPv
-          selectedPv={selectedPv}
-          rejectDialogOpen={rejectDialogOpen}
-          handleClosePvRejectDialog={handleClosePvRejectDialog}
-        />
 
         {/* {selectedFolder && ( )} */}
         <PvTableFooter
@@ -221,6 +235,57 @@ export default function PvTable({}) {
       </div>
     </div>
   );
+
+  // {
+  //   selectedPvData && (
+  //     <div className="hidden print:block p-8">
+  //       <h1 className="text-2xl font-bold mb-4">
+  //         Procès-Verbal N° {selectedPvData.dossier.num_bc}
+  //       </h1>
+
+  //       <p>
+  //         <strong>Client:</strong> {selectedPvData.client.nom_client}
+  //       </p>
+  //       <p>
+  //         <strong>Adresse:</strong> {selectedPvData.client.adresse_client}
+  //       </p>
+  //       <p>
+  //         <strong>Téléphone:</strong> {selectedPvData.client.tel_client}
+  //       </p>
+
+  //       <h2 className="text-xl font-semibold mt-6 mb-2">Détails:</h2>
+  //       <table className="w-full border">
+  //         <thead>
+  //           <tr className="border">
+  //             <th className="border p-2">Produit</th>
+  //             <th className="border p-2">Quantité</th>
+  //             <th className="border p-2">Largeur</th>
+  //             <th className="border p-2">Épaisseur</th>
+  //           </tr>
+  //         </thead>
+  //         <tbody>
+  //           {selectedPvData.details.map((item) => (
+  //             <tr
+  //               key={item.detail_commande.id_detail_commande}
+  //               className="border"
+  //             >
+  //               <td className="border p-2">
+  //                 {item.produit.designation_produit}
+  //               </td>
+  //               <td className="border p-2">{item.detail_commande.quantite}</td>
+  //               <td className="border p-2">
+  //                 {item.detail_commande.largeur} mm
+  //               </td>
+  //               <td className="border p-2">
+  //                 {item.detail_commande.epaisseur} mm
+  //               </td>
+  //             </tr>
+  //           ))}
+  //         </tbody>
+  //       </table>
+  //     </div>
+  //   );
+  // }
 }
 
 // const handleResetSort = () => {

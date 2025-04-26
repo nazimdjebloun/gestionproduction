@@ -49,7 +49,15 @@ export default function ValidatePv({
               queryKey: ["pvs"],
               type: "active",
             });
-
+                  queryClient.refetchQueries({
+                    queryKey: ["pvsvalider"],
+                    type: "active",
+                  });
+                  queryClient.refetchQueries({
+                    queryKey: ["clientfolders"],
+                    type: "active",
+                  });
+                  queryClient.invalidateQueries(["folders"]);
       handleClosePvValidatDialog();
     }
     if (state?.success === false) {

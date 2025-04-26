@@ -43,11 +43,15 @@ export default function RejectPv({
   useEffect(() => {
     if (state?.success === true) {
         toast.success(state?.message);
-                    queryClient.refetchQueries({
-                      queryKey: ["pvs"],
-                      type: "active",
-                    });
-
+      queryClient.invalidateQueries({
+        queryKey: ["clientfolders"], // Must match exactly
+        refetchType: "active", // Optional
+      });
+      queryClient.invalidateQueries(["folders"]);
+      queryClient.invalidateQueries({
+        queryKey: ["pvs"], // Must match exactly
+        refetchType: "active", // Optional
+      });
       handleClosePvRejectDialog();
     }
     if (state?.success === false) {

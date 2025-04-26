@@ -15,6 +15,18 @@ const pvController = {
       next(error);
     }
   },
+  getPVsValidated: async (req, res, next) => {
+    try {
+      const pvs = await pvService.getPVsValidated();
+      res.status(200).json({
+        success: true,
+        count: pvs.length,
+        data: pvs,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
   getPVsEnTraitement: async (req, res, next) => {
     try {
       const pvs = await pvService.getPVsByStatus("entraitement");
@@ -30,8 +42,7 @@ const pvController = {
   getPVsEnTraitementByDossierId: async (req, res, next) => {
     try {
       const pvs = await pvService.getPVsByDossierIdAndStatus(
-        req.params.id_dossier,
-        "entraitement"
+        req.params.id_dossier
       );
       res.status(200).json({
         success: true,

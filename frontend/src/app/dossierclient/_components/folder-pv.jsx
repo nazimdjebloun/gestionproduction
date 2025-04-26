@@ -34,7 +34,7 @@ export default function FolderPv({ folderId, pvDialogOpen, handleClosePvDialog }
       onOpenChange={handleClosePvDialog}
       className="flex justify-center items-center"
     >
-      <DialogContent className="p-0 border-none max-h-[80%] w-full overflow-y-scroll">
+      <DialogContent className="p-0 border-none max-h-[80%] w-full ">
         <Card className="border-none">
           <DialogHeader className="px-6 pt-6 pb-2">
             <DialogTitle className="text-center text-foreground">

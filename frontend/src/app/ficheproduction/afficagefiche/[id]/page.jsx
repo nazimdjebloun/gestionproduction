@@ -31,27 +31,36 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Separator } from "@radix-ui/react-dropdown-menu";
 
 export default function FileView() {
-const params = useParams();
-const fileId = params.id;
-    
-const { data: file, isPending } = useFileById(fileId);
-const { data: products, productsIsPending } =useFileProducts(fileId);
-const { data: materials, materialsIsPending } = useMaterialByFileId(fileId);
-// const { data: employees, employeesIsPending } = useEmployesByFileId(fileId);
-           useEffect(() => {
-             console.log("materials : ", materials);
-           }, [materials]); 
-    
-        useEffect(() => {
-          console.log("selected file : ", file);
-        }, [file]);
-        useEffect(() => {
-              console.log("selected products : ", products);
-            }, [products]);
-    
-    
+  const params = useParams();
+  const fileId = params.id;
+
+  const { data: file, isPending, refresh: refetchFile } = useFileById(fileId);
+  const {
+    data: products,
+    productsIsPending,
+    refresh: refetchProducts,
+  } = useFileProducts(fileId);
+  const {
+    data: materials,
+    materialsIsPending,
+    refresh: refetchMaterials,
+  } = useMaterialByFileId(fileId);
+  const {
+    data: employees,
+    employeesIsPending,
+    refresh: refetchEmployees,
+  } = useEmployesByFileId(fileId);
+
+  useEffect(() => {
+    refetchFile();
+    refetchProducts();
+    refetchMaterials();
+    refetchEmployees();
+  }, [fileId]);
+
   if (isPending || productsIsPending) {
     return <div className="flex justify-center p-8">Loading...</div>;
   }
@@ -100,8 +109,176 @@ const { data: materials, materialsIsPending } = useMaterialByFileId(fileId);
         </CardContent>
       </Card>
 
-      {/* Products Table */}
-      {/* <Card className="p-0 overflow-hidden">
+      <Card className="p-4">
+        <CardHeader className="p-0 pb-4">
+          <CardTitle>Produits associser</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          {products && products.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {products.map((product) => (
+                <Card
+                  key={product.id_detail_commande}
+                  className="hover:shadow-md transition-shadow bg-background"
+                >
+                  <CardContent className="p-4 space-y-3 ">
+                    <div className="flex justify-between items-start">
+                      <h3 className="font-medium text-lg">
+                        {product.designation_produit}
+                      </h3>
+                      <Badge variant="outline" className="ml-2">
+                        {product.quantite || "0"}
+                      </Badge>
+                    </div>
+
+                    {product.description_produit && (
+                      <p className="text-sm text-muted-foreground">
+                        {product.description_produit}
+                      </p>
+                    )}
+
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">Largeur</p>
+                        <p>{product.largeur ? `${product.largeur} mm` : "-"}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Hauteur</p>
+                        <p>
+                          {product.epaisseur ? `${product.epaisseur} mm` : "-"}
+                        </p>
+                      </div>
+                    </div>
+
+                    {product.details && (
+                      <div className="pt-2 border-t">
+                        <p className="text-sm text-muted-foreground">
+                          Details:
+                        </p>
+                        <p className="text-sm">{product.details}</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <p className="text-muted-foreground text-center py-8">
+              Pas de produits associs avec cette fiche
+            </p>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card className="px-3 overflow-hidden border bg-background">
+        <CardHeader className="justify-center text-xl">
+          <CardTitle>Materials Used</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          {materials && materials.length > 0 ? (
+            <Card className="p-0 overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Material</TableHead>
+                    <TableHead>Quantity</TableHead>
+                  </TableRow>
+                </TableHeader>
+
+                <TableBody className="p-0 bg-background">
+                  {materials.map((material) => (
+                    <TableRow
+                      key={`${material.id_fiche_production}-${material.id_matiere}`}
+                    >
+                      <TableCell className="font-medium">
+                        {material.designation_matiere}
+                      </TableCell>
+                      <TableCell>{material.quantite}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Card>
+          ) : (
+            <Card className="bg-background justify-center items-center">
+              <p className="text-muted-foreground">
+                No materials recorded
+                {materials && console.log("Materials data:", materials)}
+              </p>
+            </Card>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Employees Section */}
+
+      {/* <Card>
+        <CardHeader>
+          <CardTitle>Employees Worked</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {employees && Object.keys(employees).length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {employees.map((employee) => (
+                  <TableRow key={`${employee.id_employe}`}>
+                    <TableCell className="font-medium">
+                      {employee.nom_employe} {employee.prenom_employe}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <p className="text-muted-foreground">No employees recorded</p>
+          )}
+        </CardContent>
+      </Card> */}
+      <Card className="px-3 overflow-hidden border bg-background">
+        <CardHeader className="justify-center text-xl">
+          <CardTitle>Employes associer a cetter fiche de production</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0 bg-background">
+          {employees && Object.keys(employees).length > 0 ? (
+            <Card className="p-0 overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="p-0 bg-background">
+                  {employees.map((employee) => (
+                    <TableRow key={`${employee.id_employe}`}>
+                      <TableCell className="font-medium">
+                        {employee.nom_employe} {employee.prenom_employe}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Card>
+          ) : (
+            <Card className="bg-background justify-center items-center">
+              <p className="text-muted-foreground">pas d'employees</p>
+            </Card>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+{
+  /* Products Table */
+}
+{
+  /* <Card className="p-0 overflow-hidden">
         {products && products.length > 0 ? (
           <Table>
             <TableHeader>
@@ -165,136 +342,5 @@ const { data: materials, materialsIsPending } = useMaterialByFileId(fileId);
             No products associated with this file
           </p>
         )}
-      </Card> */}
-      <Card className="p-4">
-        <CardHeader className="p-0 pb-4">
-          <CardTitle>Produits associser</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          {products && products.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {products.map((product) => (
-                <Card
-                  key={product.id_detail_commande}
-                  className="hover:shadow-md transition-shadow bg-background"
-                >
-                  <CardContent className="p-4 space-y-3 ">
-                    <div className="flex justify-between items-start">
-                      <h3 className="font-medium text-lg">
-                        {product.designation_produit}
-                      </h3>
-                      <Badge variant="outline" className="ml-2">
-                        {product.quantite || "0"}
-                      </Badge>
-                    </div>
-
-                    {product.description_produit && (
-                      <p className="text-sm text-muted-foreground">
-                        {product.description_produit}
-                      </p>
-                    )}
-
-                    <div className="grid grid-cols-2 gap-2 text-sm">
-                      <div>
-                        <p className="text-muted-foreground">Largeur</p>
-                        <p>{product.largeur ? `${product.largeur} mm` : "-"}</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground">Hauteur</p>
-                        <p>
-                          {product.epaisseur ? `${product.epaisseur} mm` : "-"}
-                        </p>
-                      </div>
-                    </div>
-
-                    {product.details && (
-                      <div className="pt-2 border-t">
-                        <p className="text-sm text-muted-foreground">
-                          Details:
-                        </p>
-                        <p className="text-sm">{product.details}</p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <p className="text-muted-foreground text-center py-8">
-              Pas de produits associs avec cette fiche
-            </p>
-          )}
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Materials Used</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {materials && materials.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Material</TableHead>
-                  <TableHead>Quantity</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {materials.map((material) => (
-                  <TableRow
-                    key={`${material.id_fiche_production}-${material.id_matiere}`}
-                  >
-                    <TableCell className="font-medium">
-                      {material.designation_matiere}
-                    </TableCell>
-                    <TableCell>{material.quantite}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <p className="text-muted-foreground">
-              No materials recorded
-              {materials && console.log("Materials data:", materials)}
-            </p>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Employees Section */}
-      {/* <Card>
-        <CardHeader>
-          <CardTitle>Employees Worked</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {employees && employees.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Employee</TableHead>
-                  <TableHead>Workshop</TableHead>
-                  {file.etat_fiche === 'finie' && <TableHead>Hours Worked</TableHead>}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {employees.map((employee) => (
-                  <TableRow key={`${employee.id_fiche_production}-${employee.id_employe}`}>
-                    <TableCell className="font-medium">
-                      {employee.nom_employe} {employee.prenom_employe}
-                    </TableCell>
-                    <TableCell>{employee.nom_atelier}</TableCell>
-                    {file.etat_fiche === 'finie' && (
-                      <TableCell>{employee.heures_travaillees || 'Not recorded'}</TableCell>
-                    )}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <p className="text-muted-foreground">No employees recorded</p>
-          )}
-        </CardContent>
-      </Card> */}
-    </div>
-  );
+      </Card> */
 }

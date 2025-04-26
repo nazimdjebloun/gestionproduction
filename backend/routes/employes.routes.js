@@ -9,7 +9,7 @@ router.get("/", employeController.getAllEmployes);
 router.get("/:id", employeController.getEmployeById);
 
 // GET single Materials
-router.get("productionfile/:id", employeController.getEmployeByFileId);
+router.get("/productionfile/:id", employeController.getEmployeByFileId);
 
 // POST new Materials
 router.post("/", employeController.createEmploye);

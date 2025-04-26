@@ -216,16 +216,21 @@ export default function FolderTable() {
             />
           </Table>
         </Card>
-        <FolderFiles
-          viewDialogOpen={viewDialogOpen}
-          handleCloseViewDialog={handleCloseViewDialog}
-          folderId={selectedFolder}
-        />
-        <FolderPv
-          pvDialogOpen={pvDialogOpen}
-          handleClosePvDialog={handleClosePvDialog}
-          folderId={selectedFolder}
-        />
+        {selectedFolder && (
+          <>
+            <FolderFiles
+              viewDialogOpen={viewDialogOpen}
+              handleCloseViewDialog={handleCloseViewDialog}
+              folderId={selectedFolder}
+            />
+            <FolderPv
+              pvDialogOpen={pvDialogOpen}
+              handleClosePvDialog={handleClosePvDialog}
+              folderId={selectedFolder}
+            />
+          </>
+        )}
+
         {/* {selectedFolder && ( )} */}
         <FolderTableFooter
           filteredAndSortedData={filteredAndSortedData}

@@ -97,10 +97,10 @@ export default function FileTableBody({
                     </DropdownMenuItem>
                   </Link>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => handleEdit(file)}>
+                  {/* <DropdownMenuItem onClick={() => handleEdit(file)}>
                     <Edit2 />
                     Modifier fiche
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   <Link
                     href={`./ficheproduction/remplissagefiche/${file.id_fiche_production}`}
                   >
