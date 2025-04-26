@@ -8,6 +8,10 @@ router.get("/", clientFolderController.getAllClientFolders);
 // GET single Product
 router.get("/:id", clientFolderController.getClientFolderById);
 
+// GET single Product
+router.get("/client/:id", clientFolderController.getClientFolderByclientId);
+
+
 // POST new Product
 router.post("/", clientFolderController.createClientFolder);
 

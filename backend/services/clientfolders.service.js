@@ -34,10 +34,25 @@ const clientFolderService = {
   // Get single client by ID
   getClientFolderById: async (id) => {
     const result = await pool.query(
-      "SELECT * FROM client WHERE id_dossier = $1",
+      "SELECT * FROM dossier WHERE id_dossier = $1",
       [id]
     );
     return result.rows[0];
+  },
+  getClientFolderByclientId: async (id) => {
+    const query = `
+      SELECT
+        d.*,
+        c.nom_client ,
+        dep.nom_departement
+      FROM dossier d
+      JOIN client c ON d.id_client = c.id_client
+      JOIN departement dep ON d.id_departement = dep.id_departement
+      WHERE d.id_client = $1
+          ORDER BY d.date_creation DESC
+    `;
+    const result = await pool.query(query, [id]);
+    return result.rows;
   },
 
   // Create new client

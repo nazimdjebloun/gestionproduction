@@ -360,6 +360,21 @@ export function useFolderById(folderId) {
   );
 }
 
+
+export function useFolderByClientId(clientId) {
+  return useFetchDataById(
+    "/api/clientfolders/client",
+    clientId,
+    ["folderByclientid"],
+    (clientfolders) =>
+      clientfolders.map((clientfolder) => ({
+        ...clientfolder,
+      }))
+  );
+}
+
+
+
 export function useFolderProducts(folderId) {
   return useFetchDataById(
     "/api/orders/clientfolder",

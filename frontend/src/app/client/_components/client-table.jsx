@@ -36,14 +36,14 @@ import axiosInstance from "@/lib/axios";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { toast } from "sonner";
 import EditClient from "./edit-client";
+import ClientFolders from "./view-client-folders";
 
 const fetchClients = async () => {
   const response = await axiosInstance.get("/api/clients");
-  console.log(response.data.data);
   return response.data.data;
 };
 
-export default function ClientTable({  }) {
+export default function ClientTable({}) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const [sortField, setSortField] = useState("");
@@ -52,14 +52,14 @@ export default function ClientTable({  }) {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
 
+  const [viewFoldersDialogOpen, setViewFoldersDialogOpen] = useState(false);
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
 
-
-
-  useEffect(() => {
-    console.log(selectedClient);
-  }, [selectedClient]);
+  // useEffect(() => {
+  //   console.log(selectedClient);
+  // }, [selectedClient]);
   // const queryClient = useQueryClient();
   const { isPending, isError, data, error } = useQuery({
     queryKey: ["clients"],
@@ -70,8 +70,8 @@ export default function ClientTable({  }) {
   const handleResetSort = () => {
     setSortField("");
     setSortDirection("asc");
-    setCurrentPage(1)
-  }
+    setCurrentPage(1);
+  };
 
   // Handle opening edit dialog
   const handleEdit = (client) => {
@@ -79,6 +79,19 @@ export default function ClientTable({  }) {
       setSelectedClient(client);
       setEditDialogOpen(true);
     }, 10); // Tiny delay gives DropdownMenu time to close
+  };
+
+  const handleViewFolder = (client) => {
+    setTimeout(() => {
+      setSelectedClient(client);
+      setViewFoldersDialogOpen(true);
+    }, 10); // Tiny delay gives DropdownMenu time to close
+  };
+
+  // Handle closing edit dialog
+  const handleCloseViewFoldersDialog = () => {
+    setViewFoldersDialogOpen(false);
+    setSelectedClient(null);
   };
 
   // Handle closing edit dialog
@@ -330,7 +343,9 @@ export default function ClientTable({  }) {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleViewFolder(client)}
+                          >
                             <User />
                             Affiche client
                           </DropdownMenuItem>
@@ -427,6 +442,15 @@ export default function ClientTable({  }) {
           client={selectedClient}
           editDialogOpen={editDialogOpen}
           Close={handleCloseEditDialog}
+          setEditDialogOpen={setEditDialogOpen}
+        />
+      )}
+
+      {selectedClient && (
+        <ClientFolders
+          client={selectedClient}
+          viewFoldersDialogOpen={viewFoldersDialogOpen}
+          handleCloseViewFoldersDialog={handleCloseViewFoldersDialog}
           setEditDialogOpen={setEditDialogOpen}
         />
       )}

@@ -14,6 +14,7 @@ const clientFolderController = {
       next(error);
     }
   },
+
   getClientFolderById: async (req, res, next) => {
     try {
       const clientFolder = await clientFolderService.getClientFolderById(
@@ -33,6 +34,21 @@ const clientFolderController = {
       next(error);
     }
   },
+  getClientFolderByclientId: async (req, res, next) => {
+    try {
+      const clientFolders = await clientFolderService.getClientFolderByclientId(
+        req.params.id
+      );
+      res.status(200).json({
+        success: true,
+        count: clientFolders.length,
+        data: clientFolders,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   createClientFolder: async (req, res, next) => {
     try {
       const { data, selectedProducts } = req.body;
