@@ -63,7 +63,7 @@ export default function FileTableHeader({
         </TableHead>
         <TableHead
           className="cursor-pointer"
-          onClick={() => handleSort("date_creation")}
+          onClick={() => handleSort("date_creation_dossier")}
         >
           <div className="flex items-center">
             Date creation dossier
@@ -90,7 +90,7 @@ export default function FileTableHeader({
         </TableHead>
         <TableHead
           className="cursor-pointer"
-          onClick={() => handleSort("nom_departement")}
+          onClick={() => handleSort("nom_atelier")}
         >
           <div className="flex items-center">
             Atelier
@@ -99,11 +99,11 @@ export default function FileTableHeader({
         </TableHead>
         <TableHead
           className="cursor-pointer"
-          // onClick={() => handleSort("adresse_client")}
+          onClick={() => handleSort("etat_fiche")}
         >
           <div className="flex items-center">
             Etas
-            {/* {renderSortIcon("adresse_client")} */}
+            {renderSortIcon("etat_fiche")}
           </div>
         </TableHead>
         <TableHead>

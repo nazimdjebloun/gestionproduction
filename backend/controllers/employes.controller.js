@@ -33,6 +33,19 @@ const employeController = {
       next(error);
     }
   },
+  getEmployeByFileId: async (req, res, next) => {
+    try {
+      const employes = await employeService.getEmployeByFileId(req.params.id);
+
+      res.status(200).json({
+        success: true,
+        count: employes.length,
+        data: employes,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 
   // Create new employe
   createEmploye: async (req, res, next) => {

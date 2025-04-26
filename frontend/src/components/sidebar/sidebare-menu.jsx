@@ -45,6 +45,11 @@ const items = [
     icon: FilePen,
   },
   {
+    title: "procès verbal",
+    url: "/pv",
+    icon: FilePen,
+  },
+  {
     title: "Parametre",
     url: "#",
     icon: Settings,

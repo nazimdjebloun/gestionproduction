@@ -22,6 +22,8 @@ const clientFolderService = {
       FROM dossier d
       JOIN client c ON d.id_client = c.id_client
       JOIN departement dep ON d.id_departement = dep.id_departement
+          WHERE d.etat_dossier IN ('encours', 'entraitement')
+          ORDER BY d.date_creation DESC
     `;
 
     // const result = await pool.query("SELECT * FROM dossier");

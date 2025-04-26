@@ -21,9 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import CreateClientAction from "@/actions/create-client";
 import { toast } from "sonner";
-import { Loader2, Check, ChevronsUpDown } from "lucide-react";
+import { Loader2, Check, ChevronsUpDown, PlusCircle } from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -38,77 +37,82 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import CreateClientFolderAction from "@/actions/create-clientFolder";
 import { useEmployes, useMaterials } from "@/hooks/fetsh-data";
 
 // export default function SelectClient({ value, setValue }) {
-export default function SelectMaterial({ value, setValue, state }) {
+export default function SelectMaterial({
+  selectedMaterials,
+  setSelectedMaterials,
+  selectedMaterialId,
+  setSelectedMaterialId,
+  materials,
+  isLoading,
+}) {
   const [open, setOpen] = useState(false);
-  const { data: materials, isLoading, refresh } = useMaterials();
 
-    
-  const handleAddMaterial = () => {
-    if (!selectedMaterials) {
-      toast.error("No selected Materials ");
-      return;
-    }
+  //   if (!selectedMaterialId) {
+  //     toast.error("Aucune matière sélectionnée");
+  //     return;
+  //   }
+  //   const selectedMaterial = selectedMaterialId
+  //     ? materials?.find((m) => m.id_matiere === selectedMaterialId)
+  //     : null;
+  //   const materialToAdd = materials.find(
+  //     (m) => m.id_matiere === selectedMaterialId
+  //   );
 
-    const materialToAdd = materials.find(
-      (p) => p.id_produit === selectedProductId
-    );
+  //   if (!materialToAdd) {
+  //     toast.error("Matière introuvable");
+  //     return;
+  //   }
 
-    if (!productToAdd) return;
+  //   const isDuplicate = selectedMaterials.some(
+  //     (mat) => mat.id_matiere === selectedMaterialId
+  //   );
 
-    // const uniqueId = `${selectedProductId}-${Date.now()}`;
-    const newProduct = {
-      ...productToAdd,
-      id_produit: productToAdd.id_produit,
-      quantity,
-      ...(productDetails ? { productDetails } : { productDetails: null }),
-      ...(hasSurface ? { width, height } : { width: null, height: null }),
-    };
+  //   if (isDuplicate) {
+  //     toast.warning(
+  //       `${materialToAdd.designation_matiere} est déjà dans la liste`
+  //     );
+  //     return;
+  //   }
 
-    setSelectedProducts([...selectedProducts, newProduct]);
-    setSelectedProductId("");
-    setQuantity(1);
-    setProductDetails("");
-    if (hasSurface) {
-      setWidth(0);
-      setHeight(0);
-      setHasSurface(false);
-    }
+  //   const newMaterial = {
+  //     ...materialToAdd,
+  //     id_matiare: materialToAdd.id_matiere,
+  //     quantity: Number(quantity) || 1,
+  //   };
 
-    toast.success(`${productToAdd.designation_produit} ajouter `);
-  };
+  //   setSelectedMaterials([...selectedMaterials, newMaterial]);
+  //   toast.success(`${materialToAdd.designation_matiere} ajouté`);
 
-    
-  useEffect(() => {
-    console.log("materials : ", materials);
-  }, [materials]);
-
+  //   // Reset selection
+  //   setSelectedMaterialId(null);
+  //   setQuantity(1);
+  // };
   const selectedMaterial = materials.find(
-    (material) => material.id_matiare === value
+    (material) => material.id_matiere === selectedMaterialId
   );
   return (
     <div>
-      <Popover open={open} onOpenChange={setOpen} className="w-[100%]">
+      <Popover open={open} onOpenChange={setOpen} className="w-full">
         <Input
           id="material"
           name="material"
           placeholder="material"
-          value={value}
+          // value={value}
           readOnly
           //   defaultValue={state?.inputs?.name}
           type="text"
           hidden
         />
         <p className="p-1">Matiares premieres</p>
-        <PopoverTrigger asChild className="w-[100%]">
+        <PopoverTrigger asChild className="w-full">
           <Button
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-[100%] justify-between"
+            className="w-full justify-between"
           >
             {selectedMaterial
               ? `${selectedMaterial.designation_matiere}`
@@ -118,7 +122,7 @@ export default function SelectMaterial({ value, setValue, state }) {
             <ChevronsUpDown className="opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[100%] p-1">
+        <PopoverContent className="w-full p-1">
           <Command>
             <CommandInput
               placeholder="Rechercher un client..."
@@ -137,12 +141,16 @@ export default function SelectMaterial({ value, setValue, state }) {
                 <>
                   <CommandEmpty>matiare introuvable.</CommandEmpty>
                   <CommandGroup>
-                    {materials.map((material) => (
+                    {materials.map((material, index) => (
                       <CommandItem
-                        key={material.id_matiare}
-                        value={material.id_matiare}
+                        key={material.id_matiere}
+                        value={material.id_matiere}
                         onSelect={() => {
-                          setValue(material.id_matiare);
+                          setSelectedMaterialId(
+                            material.id_matiere === selectedMaterialId
+                              ? ""
+                              : material.id_matiere
+                          );
                           setOpen(false);
                         }}
                       >
@@ -150,7 +158,7 @@ export default function SelectMaterial({ value, setValue, state }) {
                         <Check
                           className={cn(
                             "ml-auto h-4 w-4",
-                            value === material.id_matiare
+                            selectedMaterialId === material.id_matiere
                               ? "opacity-100"
                               : "opacity-0"
                           )}
@@ -160,17 +168,22 @@ export default function SelectMaterial({ value, setValue, state }) {
                   </CommandGroup>
                 </>
               ) : (
-                <CommandGroup>
-                  <CommandItem disabled>Aucune matiare trouvé</CommandItem>
-                </CommandGroup>
+                <>
+                  <CommandGroup>
+                    <CommandItem disabled>Aucune matiare trouvé</CommandItem>
+                  </CommandGroup>
+                </>
               )}
             </CommandList>
           </Command>
         </PopoverContent>
       </Popover>
-      {state?.errors?.materials && (
+      {/* {state?.errors?.materials && (
         <p className="text-sm text-red-500 px-2">{state.errors.materials[0]}</p>
-      )}
+      )} */}
     </div>
   );
 }
+
+
+

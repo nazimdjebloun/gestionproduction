@@ -25,7 +25,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { TableBody } from "@/components/ui/table";
 import FolderTableBody from "./_data/table-body";
-import FolderTable from "./_data/folder-table";
+// import FolderTable from "./_data/folder-table";
+import dynamic from "next/dynamic";
+
+
+const FolderTable = dynamic(() => import("./_data/folder-table"), {
+  ssr: false,
+});
 
 export default function DossierClient() {
   const queryClient = useQueryClient();
@@ -40,28 +46,45 @@ export default function DossierClient() {
 
   useEffect(() => {}, []);
 
-  // useEffect(() => {
-  //   if (departments.length > 0 && !department) {
-  //     setDepartment(departments[0].id);
-  //   }
-  // }, [departments]);
-
-  // useEffect(() => {
-  //   if (state?.success === true) {
-  //     setSelectedProducts([]);
-  //     setClient("");
-  //     setDepartment("");
-  //     toast.success(state?.message);
-  //     queryClient.invalidateQueries(["folders"]);
-  //   }
-  //   if (state?.success === false) {
-  //     toast.error(state?.message);
-  //   }
-  // }, [state]);
-
   return (
     <div className="w-full ">
-      {/* <Card className="w-[800px] h-fit">
+      <div className="flex justify-between w-full p-2">
+        <h1 className="text-3xl">Dossiers Client</h1>
+        <Link href="./dossierclient/creationdossier" prefetch={true}>
+          <Button variant={"outline"}>
+            <Plus />
+            Ajouter un dossier client
+          </Button>
+        </Link>
+      </div>
+      <div>
+        <FolderTable />
+      </div>
+    </div>
+  );
+}
+
+// useEffect(() => {
+//   if (departments.length > 0 && !department) {
+//     setDepartment(departments[0].id);
+//   }
+// }, [departments]);
+
+// useEffect(() => {
+//   if (state?.success === true) {
+//     setSelectedProducts([]);
+//     setClient("");
+//     setDepartment("");
+//     toast.success(state?.message);
+//     queryClient.invalidateQueries(["folders"]);
+//   }
+//   if (state?.success === false) {
+//     toast.error(state?.message);
+//   }
+// }, [state]);
+
+{
+  /* <Card className="w-[800px] h-fit">
         <form action={formAction} className="space-y-4">
           <CardHeader className="flex justify-between">
             <div>
@@ -140,19 +163,5 @@ export default function DossierClient() {
           </CardContent>
           <CardFooter></CardFooter>
         </form>
-      </Card> */}
-      <div className="flex justify-between w-full p-2">
-        <h1 className="text-3xl">Dossiers Client</h1>
-        <Link href="./dossierclient/creationdossier" prefetch={true}>
-          <Button variant={"outline"}>
-            <Plus />
-            Ajouter un dossier client
-          </Button>
-        </Link>
-      </div>
-      <div>
-        <FolderTable />
-      </div>
-    </div>
-  );
+      </Card> */
 }

@@ -72,6 +72,67 @@ export function useFetchDataById(
   };
 }
 
+
+export function usePVs() {
+  return useFetchData("/api/pvs", "pvs", (pvs) =>
+    pvs.map((pv) => ({
+      ...pv,
+      // Add any transformations here if needed
+    }))
+  );
+}
+
+export function usePVById(id) {
+  return useFetchDataById("/api/pvs", id, ["pvById", id], (pv) => ({
+    ...pv,
+    // Add any transformations here if needed
+  }));
+}
+
+export function usePVsByStatus() {
+  return useFetchData(`/api/pvs/entraitement`, ["pvsEntraitement"], (pvs) =>
+    pvs.map((pv) => ({
+      ...pv,
+      // Add any transformations here if needed
+    }))
+  );
+}
+
+export function usePVsByDossierId(id_dossier) {
+  return useFetchDataById(
+    "/api/pvs/dossier",
+    id_dossier,
+    ["pvsByDossier", id_dossier],
+    (pvs) =>
+      pvs.map((pv) => ({
+        ...pv,
+        // Add any transformations here if needed
+      }))
+  );
+}
+export function usePVsByDossierIdWithReserve(id_dossier) {
+  return useFetchDataById(
+    "/api/pvs/dossier/reserve",
+    id_dossier,
+    ["pvsWithReserveByDossier", id_dossier],
+    (pvs) =>
+      pvs.map((pv) => ({
+        ...pv,
+      }))
+  );
+}
+export function usePVsEnTraitementByDossierId(id_dossier) {
+  return useFetchData(
+    "/api/pvs/dossier/entraitement",
+    id_dossier,
+    ["pvsEnTraitementByDossier", id_dossier],
+    (pvs) =>
+      pvs.map((pv) => ({
+        ...pv,
+      }))
+  );
+}
+
 // Specific hooks for each data type
 export function useEmployes() {
   return useFetchData("/api/employes", "employes", (employes) =>
@@ -82,9 +143,25 @@ export function useEmployes() {
 }
 
 export function useEmployesById(id) {
-  return useFetchDataById("/api/employes", id, ["employe", id], (employe) => ({
-    employe,
-  }));
+  return useFetchDataById(
+    "/api/employes",
+    id,
+    ["employebyFile", id],
+    (employe) => ({
+      employe,
+    })
+  );
+}
+
+export function useEmployesByFileId(id) {
+  return useFetchDataById(
+    "/api/employes/productionfile",
+    id,
+    ["employe", id],
+    (employe) => ({
+      employe,
+    })
+  );
 }
 
 export function useMaterials() {
@@ -102,6 +179,29 @@ export function useMaterialById(id) {
     (material) => ({
       material,
     })
+  );
+}
+
+// export function useMaterialByFileId(id) {
+//   return useFetchDataById(
+//     "/api/materials/productionfile",
+//     id,
+//     ["materialByfile", id],
+//     materials.map((material) => ({
+//       ...material,
+//     }))
+//   );
+// }
+
+export function useMaterialByFileId(id) {
+  return useFetchDataById(
+    "/api/materials/productionfile",
+    id,
+    ["materialByFile", id],
+    (materials) =>
+      materials?.map((material) => ({
+        ...material,
+      })) || []
   );
 }
 
@@ -292,29 +392,42 @@ export function useFileById(fileId) {
     fileId,
     ["file", fileId],
     (file) => ({
-      id_fiche_production: file.id_fiche_production,
-      id_atelier: file.id_atelier,
-      num_bc: file.num_bc,
-      nom_client: file.nom_client,
-      nom_atelier: file.nom_atelier,
-      nom_departement: file.nom_departement,
-      id_dossier: file.id_dossier,
+      ...file,
     })
   );
 }
+
+export function useFileByFolderId(folderId) {
+  return useFetchDataById(
+    "/api/productionfiles/byfolder",
+    folderId,
+    ["fileByfolder", folderId],
+    // (file) => ({
+    // id_fiche_production: file.id_fiche_production,
+    // id_atelier: file.id_atelier,
+    // num_bc: file.num_bc,
+    // nom_client: file.nom_client,
+    // nom_atelier: file.nom_atelier,
+    // nom_departement: file.nom_departement,
+    // id_dossier: file.id_dossier,
+    //     ...file,
+    //   })
+    // );
+    (productionfiles) =>
+      productionfiles.map((productionfile) => ({
+        ...productionfile,
+      }))
+  );
+}
+
 export function useFileProducts(fileId) {
   return useFetchDataById(
-    "/api/productionfile",
+    "/api/productionfiles/products",
     fileId,
-    ["fileProducts",fileId],
+    ["fileProducts", fileId],
     (fileProducts) =>
       fileProducts.map((fileProduct) => ({
-        id_detail_commande: fileProduct.id_detail_commande,
-        quantite: fileProduct.quantite,
-        details: fileProduct.details,
-        largeur: fileProduct.largeur,
-        epaisseur: fileProduct.epaisseur,
-        id_produit: fileProduct.id_produit,
+        ...fileProduct,
       }))
   );
 }

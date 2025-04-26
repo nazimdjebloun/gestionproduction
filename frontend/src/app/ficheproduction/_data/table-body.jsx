@@ -88,10 +88,14 @@ export default function FileTableBody({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem>
-                    <User />
-                    Affiche fiche
-                  </DropdownMenuItem>
+                  <Link
+                    href={`./ficheproduction/afficagefiche/${file.id_fiche_production}`}
+                  >
+                    <DropdownMenuItem>
+                      <User />
+                      Affiche fiche
+                    </DropdownMenuItem>
+                  </Link>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => handleEdit(file)}>
                     <Edit2 />

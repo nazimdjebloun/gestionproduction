@@ -20,13 +20,21 @@ const materialController = {
   // Get single shop
   getMaterialById: async (req, res, next) => {
     try {
-      const material = await materialService.getMaterialById(req.params.id);
-      if (!material) {
-        return res.status(404).json({
-          success: false,
-          message: "material not found",
-        });
-      }
+      const materials = await materialService.getMaterialById(req.params.id);
+
+      res.status(200).json({
+        success: true,
+        count: materials.length,
+        data: materials,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  getMaterialByFileId: async (req, res, next) => {
+    try {
+      const material = await materialService.getMaterialByFileId(req.params.id);
+
       res.status(200).json({
         success: true,
         data: material,
@@ -49,45 +57,45 @@ const materialController = {
     }
   },
 
-    updateMaterial: async (req, res, next) => {
-      try {
-        const material = await materialService.updateMaterial(
-          req.params.id,
-          req.body
-        );
-        if (!material) {
-          return res.status(404).json({
-            success: false,
-            message: "material not found",
-          });
-        }
-        res.status(200).json({
-          success: true,
-          data: material,
+  updateMaterial: async (req, res, next) => {
+    try {
+      const material = await materialService.updateMaterial(
+        req.params.id,
+        req.body
+      );
+      if (!material) {
+        return res.status(404).json({
+          success: false,
+          message: "material not found",
         });
-      } catch (error) {
-        next(error);
       }
-    },
+      res.status(200).json({
+        success: true,
+        data: material,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 
-    // Delete
-    deleteMaterial: async (req, res, next) => {
-      try {
-        const result = await materialService.deleteMaterial(req.params.id);
-        if (!result) {
-          return res.status(404).json({
-            success: false,
-            message: "material not found",
-          });
-        }
-        res.status(200).json({
-          success: true,
-          data: {},
+  // Delete
+  deleteMaterial: async (req, res, next) => {
+    try {
+      const result = await materialService.deleteMaterial(req.params.id);
+      if (!result) {
+        return res.status(404).json({
+          success: false,
+          message: "material not found",
         });
-      } catch (error) {
-        next(error);
       }
-    },
+      res.status(200).json({
+        success: true,
+        data: {},
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 export default materialController;

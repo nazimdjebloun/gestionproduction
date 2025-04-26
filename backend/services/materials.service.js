@@ -15,6 +15,20 @@ const materialService = {
     );
     return result.rows[0];
   },
+  getMaterialByFileId: async (id) => {
+    const query = `
+    SELECT 
+      mu.id_fiche_production,
+      mu.id_matiere,
+      mp.designation_matiere,
+      mu.quantite
+    FROM matiere_utilise mu
+    JOIN matiere_premiere mp ON mu.id_matiere = mp.id_matiere
+    WHERE mu.id_fiche_production = $1
+  `;
+    const result = await pool.query(query, [id]);
+    return result.rows;
+  },
 
   // Create a new material
   createMaterial: async (materialData) => {

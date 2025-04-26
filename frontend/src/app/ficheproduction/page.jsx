@@ -1,10 +1,16 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import SearchFilters from "./_data/search-filters";
-import FileTable from "./_data/file-table";
 // import FileTable from "./_data/file-table";
+// import FileTable from "./_data/file-table";
+import dynamic from "next/dynamic";
+
+const FileTable = dynamic(() => import("./_data/file-table"), {
+  loading: null,
+});
 
 export default function FicheProduction() {
   return (
@@ -19,6 +25,7 @@ export default function FicheProduction() {
         </Link>
       </div>
       <div>
+        {/* <FileTable /> */}
         <FileTable />
       </div>
     </div>

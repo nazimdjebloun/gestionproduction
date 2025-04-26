@@ -12,11 +12,25 @@ import {
   SidebarMenu,
 } from "@/components/ui/sidebar";
 import ThemeSwitch from "../theme/theme-swicth";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
+import { useAuth } from "../../../context/auth-context";
+import { toast } from "sonner";
+// import { useRouter } from "next/router";
 
 export default function CustomSidebareFooter() {
   const pathname = usePathname();
   const isActive = pathname === "/profile";
+  const { user, logout } = useAuth();
+  // const router = useRouter();
+  const handleLogout = (e) => {
+    e.preventDefault();
+    // Log the user out
+    logout();
+    // Show a success message
+    toast.success("Logged out successfully");
+    // Redirect to the login page
+    redirect("/connection");
+  };
 
   return (
     <SidebarFooter className="border-t">
@@ -34,13 +48,17 @@ export default function CustomSidebareFooter() {
           >
             <a href="/profile" className="flex items-center">
               <User className="h-6 w-6"></User>
-              <span className="ml-2">John Doe</span>
+              <span className="ml-2">{user?.name}</span>
             </a>
           </SidebarMenuButton>
         </SidebarMenuItem>
         <SidebarMenuItem>
           <SidebarMenuButton asChild tooltip="Logout">
-            <a href="#logout" className="flex items-center text-red-500">
+            <a
+              href="#logout"
+              onClick={handleLogout}
+              className="flex items-center text-red-500"
+            >
               <LogOut className="size-5" />
               <span className="ml-2">Logout</span>
             </a>

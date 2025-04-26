@@ -16,8 +16,11 @@ import SelectShop from "../_components/select-shop";
 import { toast } from "sonner";
 import SelectFolder from "../_components/select-folder";
 import SelectFolderProducts from "../_components/select-folder-products";
+import { useQueryClient } from "@tanstack/react-query";
 // import { useDepartmentByFolderId } from "@/hooks/fetsh-data";
 export default function FicheProduction() {
+  const queryClient = useQueryClient();
+
   const [state, formAction, isPending] = useActionState(
     CreateProductionFileAction,
     null
@@ -35,6 +38,10 @@ export default function FicheProduction() {
       setDepartment("");
       setShop("");
       toast.success(state?.message);
+      queryClient.refetchQueries({
+        queryKey: ["productionfiles"],
+        type: "active",
+      });
     }
     if (state?.success === false) {
       toast.error(state?.message);

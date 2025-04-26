@@ -15,6 +15,7 @@ const productionFileController = {
       next(error);
     }
   },
+
   getProductionFileById: async (req, res, next) => {
     try {
       const productionFile = await productionFileService.getProductionFileById(
@@ -34,6 +35,48 @@ const productionFileController = {
       next(error);
     }
   },
+  getAllProductsByProductionFile: async (req, res, next) => {
+    try {
+      const { id } = req.params; // id_fiche_production
+
+      const products =
+        await productionFileService.getAllProductsByProductionFile(id);
+
+      if (!products || products.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No products found for this production file",
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        data: products,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  getProductionFileByFolderId: async (req, res, next) => {
+    try {
+      const productionFile =
+        await productionFileService.getProductionFileByFolderId(req.params.id);
+      if (!productionFile) {
+        return res.status(404).json({
+          success: false,
+          message: "dossier client not found",
+        });
+      }
+      res.status(200).json({
+        success: true,
+        count: productionFile.length,
+        data: productionFile,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   createProductionFile: async (req, res, next) => {
     try {
       const { data, selectedOrders } = req.body;
@@ -52,12 +95,15 @@ const productionFileController = {
     }
   },
   updateProductionFile: async (req, res, next) => {
+    const { hours, folder } = req.body;
+    const { id } = req.params;
     try {
       const productionFile = await productionFileService.updateProductionFile(
-        req.params.id,
-        req.body
+        id,
+        hours,
+        folder
       );
-      if (!clientFolder) {
+      if (!productionFile) {
         return res.status(404).json({
           success: false,
           message: "dossier client  not found",
@@ -65,7 +111,7 @@ const productionFileController = {
       }
       res.status(200).json({
         success: true,
-        data: clientFolder,
+        data: productionFile,
       });
     } catch (error) {
       next(error);
@@ -73,7 +119,7 @@ const productionFileController = {
   },
   deleteProductionFile: async (req, res, next) => {
     try {
-      const result = await clientFolderService.deleteProductionFile(
+      const result = await productionFileService.deleteProductionFile(
         req.params.id
       );
       if (!result) {
@@ -87,6 +133,51 @@ const productionFileController = {
         data: {},
       });
     } catch (error) {
+      next(error);
+    }
+  },
+  employesProductionFile: async (req, res, next) => {
+    try {
+      const { selectedEmployes } = req.body;
+      const result = await productionFileService.employesProductionFile(
+        req.params.id,
+        selectedEmployes
+      );
+      if (!result) {
+        return res.status(404).json({
+          success: false,
+          message: "dossier client not found",
+        });
+      }
+      res.status(200).json({
+        success: true,
+        data: {},
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  materialsProductionFile: async (req, res, next) => {
+    try {
+      const { selectedMaterials } = req.body;
+
+      const result = await productionFileService.materialsProductionFile(
+        req.params.id,
+        selectedMaterials
+      );
+      if (!result) {
+        return res.status(404).json({
+          success: false,
+          message: "dossier client not found",
+        });
+      }
+      res.status(200).json({
+        success: true,
+        data: {},
+      });
+    } catch (error) {
+      console.log(error);
       next(error);
     }
   },

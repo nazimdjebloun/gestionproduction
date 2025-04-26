@@ -25,6 +25,8 @@ import FolderTableHeader from "./table-head";
 import FolderTableBody from "./table-body";
 import { formatDateTime } from "@/utils/formateDate";
 import SearchFilters from "./search-filters";
+import FolderFiles from "../_components/folder-files";
+import FolderPv from "../_components/folder-pv";
 
 const fetchFolders = async () => {
   const response = await axiosInstance.get("/api/clientfolders");
@@ -38,26 +40,54 @@ export default function FolderTable() {
 
   const [sortField, setSortField] = useState("");
   const [sortDirection, setSortDirection] = useState("asc");
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  // const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
-
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [pvDialogOpen, setPvDialogOpen] = useState(false);
   const { isPending, isError, data, error } = useQuery({
     queryKey: ["Folders"],
     queryFn: fetchFolders,
   });
 
-  const handleEdit = (folder) => {
+  // const handleEdit = (folder) => {
+  //   setTimeout(() => {
+  //     setSelectedFolder(folder);
+  //     setEditDialogOpen(true);
+  //   }, 10);
+  // };
+
+  // useEffect(() => {
+  //   console.log("viewDialogOpen : ", viewDialogOpen);
+  // }, [viewDialogOpen]);
+
+  const handleView = (folder) => {
     setTimeout(() => {
       setSelectedFolder(folder);
-      setEditDialogOpen(true);
-    }, 10); // Tiny delay gives DropdownMenu time to close
+      setViewDialogOpen(true);
+    }, 10);
   };
 
-  useEffect(() => {
-    console.log(selectedFolder);
-  }, [selectedFolder]);
+  const handlePv = (folder) => {
+    setTimeout(() => {
+      setSelectedFolder(folder);
+      setPvDialogOpen(true);
+    }, 10);
+  };
+
+  const handleCloseViewDialog = () => {
+    setViewDialogOpen(false);
+    setSelectedFolder(null);
+  };
+
+  const handleClosePvDialog = () => {
+    setPvDialogOpen(false);
+    setSelectedFolder(null);
+  };
+  // useEffect(() => {
+  //   console.log(selectedFolder);
+  // }, [selectedFolder]);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -178,12 +208,25 @@ export default function FolderTable() {
             />
             <FolderTableBody
               paginatedData={paginatedData}
-              handleEdit={handleEdit}
+              // handleEdit={handleEdit}
+              handleView={handleView}
+              handlePv={handlePv}
               isPending={isPending}
               isError={isError}
             />
           </Table>
         </Card>
+        <FolderFiles
+          viewDialogOpen={viewDialogOpen}
+          handleCloseViewDialog={handleCloseViewDialog}
+          folderId={selectedFolder}
+        />
+        <FolderPv
+          pvDialogOpen={pvDialogOpen}
+          handleClosePvDialog={handleClosePvDialog}
+          folderId={selectedFolder}
+        />
+        {/* {selectedFolder && ( )} */}
         <FolderTableFooter
           filteredAndSortedData={filteredAndSortedData}
           handlePageChange={handlePageChange}

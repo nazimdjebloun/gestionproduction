@@ -44,16 +44,18 @@ export default function FileTable() {
     }, 10); // Tiny delay gives DropdownMenu time to close
   };
 
-
   const handleView = (file) => {
     // setTimeout(() => { }, 10);
     setSelectedFile(file);
-    console.log(file);
+    // console.log(file);
   };
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  const handleSelection = (file) => {
+    setSelectedFile(file);
+  };
+  // useEffect(() => {
+  //   console.log(data);
+  // }, [data]);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {

@@ -8,6 +8,7 @@ import shopsRoutes from "./routes/shops.routes.js";
 import ordersRoutes from "./routes/orders.routes.js";
 import employesRoutes from "./routes/employes.routes.js";
 import materialsRoutes from "./routes/materials.routes.js";
+import pvRoutes from "./routes/pv.routes.js";
 
 import cors from "cors";
 
@@ -28,6 +29,8 @@ app.use("/api/shops", shopsRoutes);
 app.use("/api/orders", ordersRoutes);
 app.use("/api/employes", employesRoutes);
 app.use("/api/materials", materialsRoutes);
+app.use("/api/pvs", pvRoutes);
+
 app.listen(PORT, () => {
   console.log(` app running on port ${PORT}`);
 });

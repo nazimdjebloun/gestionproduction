@@ -9,6 +9,9 @@ router.get("/", materialController.getAllMaterials);
 // GET single Materials
 router.get("/:id", materialController.getMaterialById);
 
+// GET single Materials
+router.get("/productionfile/:id", materialController.getMaterialByFileId);
+
 // POST new Materials
 router.post("/", materialController.createMaterial);
 
