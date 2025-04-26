@@ -132,7 +132,7 @@ export function usePVsByDossierIdWithReserve(id_dossier) {
 export function usePVsEnTraitementByDossierId(id_dossier) {
   return useFetchData(
     `/api/pvs/dossier/entraitement/${id_dossier}`,
-    ["pvsEnTraitementByDossier", id_dossier],
+    ["pvsEnTraitementByDossier"],
     (pvs) =>
       pvs.map((pv) => ({
         ...pv,

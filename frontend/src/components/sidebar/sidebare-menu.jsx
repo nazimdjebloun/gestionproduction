@@ -15,29 +15,30 @@ import {
   Calendar,
   Home,
   Inbox,
-  Search,
+  UsersRound,
   Settings,
   LayoutDashboard,
   Folder,
   FilePen,
+  FileCheck2,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const items = [
-  {
-    title: "Dashboard ",
-    url: "/",
-    icon: LayoutDashboard,
-  },
+  // {
+  //   title: "Dashboard ",
+  //   url: "/",
+  //   icon: LayoutDashboard,
+  // },
   {
     title: "Client",
     url: "/client",
-    icon: Folder,
+    icon: UsersRound,
   },
   {
     title: "Dossier client",
     url: "/dossierclient",
-    icon: FilePen,
+    icon: Folder,
   },
   {
     title: "Fiche production",
@@ -47,13 +48,13 @@ const items = [
   {
     title: "procès verbal",
     url: "/pv",
-    icon: FilePen,
+    icon: FileCheck2,
   },
-  {
-    title: "Parametre",
-    url: "#",
-    icon: Settings,
-  },
+  // {
+  //   title: "Parametre",
+  //   url: "#",
+  //   icon: Settings,
+  // },
 ];
 
 export default function CustomSidebareMenu() {

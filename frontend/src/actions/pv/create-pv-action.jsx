@@ -14,8 +14,8 @@ export default async function CreatePv(prevState, formData) {
 
     return {
       success: true,
-      message: "pv ajouté avec succès",
-    //   createdPV: response.data,
+      message: "pv cree avec succès",
+      //   createdPV: response.data,
     };
   } catch (error) {
     console.error("Error in pv:", error);

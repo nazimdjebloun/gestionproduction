@@ -49,6 +49,10 @@ export default function FolderFiles({
         queryKey: ["pvs"], // Must match exactly
         refetchType: "active", // Optional
       });
+      queryClient.invalidateQueries({
+        queryKey: ["pvsEnTraitementByDossier"], // Must match exactly
+        refetchType: "active", // Optional
+      });
       handleCloseViewDialog();
     }
     if (state?.success === false) {
@@ -80,7 +84,7 @@ export default function FolderFiles({
             </DialogHeader>
 
             <CardContent className="p-4 space-y-3 ">
-              {isLoading ? (
+              {isLoading || PvEnTraitIsLoading ? (
                 <div className="flex justify-center items-center h-32">
                   <Loader2 className="h-6 w-6 animate-spin text-primary" />
                 </div>
